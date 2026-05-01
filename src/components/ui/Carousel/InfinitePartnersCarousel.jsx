@@ -2,15 +2,23 @@ import { motion } from 'framer-motion';
 import { PARTNERS } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { Link } from 'react-router-dom';
 
 // ==========================================
 // SECTION PARTENAIRES JUDCD
 // ==========================================
 
+// Données des partenaires
+const partnersList = PARTNERS.map((partner, index) => ({
+  id: index + 1,
+  name: partner,
+  logo: null,
+  category: index === 0 ? 'OSC' : index === 1 ? 'Institution' : index === 2 ? 'Association' : index === 3 ? 'Éducation' : 'Technique',
+  link: '#',
+}));
+
 export default function Partners() {
   const { t } = useLanguage();
-
-  const partnersList = PARTNERS;
 
   return (
     <section id="partners" className="py-20 md:py-28 bg-[#F8FAF9] relative overflow-hidden">
@@ -31,9 +39,7 @@ export default function Partners() {
         </FadeInView>
 
         {/* Carrousel infini */}
-        <FadeInView>
-          <InfiniteCarousel partners={partnersList} />
-        </FadeInView>
+        <InfiniteCarousel partners={partnersList} />
 
         {/* Appel à devenir partenaire */}
         <FadeInView className="text-center mt-16">
@@ -42,7 +48,7 @@ export default function Partners() {
               Devenir partenaire
             </h3>
             <p className="text-[#666666] text-sm mb-6">
-              Vous partagez notre vision et souhaitez collaborer avec nous ? Rejoignez notre réseau de partenaires engagés pour le développement durable.
+              Vous partagez notre vision et souhaitez collaborer avec nous ? Rejoignez notre réseau de partenaires.
             </p>
             <a
               href="mailto:associationjudcd@gmail.com?subject=Proposition%20de%20partenariat"
@@ -62,71 +68,64 @@ export default function Partners() {
 }
 
 // ==========================================
-// CARROUSEL INFINI FLUIDE - Défilement sans calage
+// CARROUSEL INFINI FLUIDE
 // ==========================================
 
 function InfiniteCarousel({ partners }) {
-  // Utiliser directement les partenaires avec leurs vraies données
-  const partnersData = partners;
-  const duplicated = [...partnersData, ...partnersData, ...partnersData];
-
-  const logoSize = 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24';
-  const itemWidth = 'w-[130px] sm:w-[150px] md:w-[170px] lg:w-[190px]';
-  const iconInner = 'w-8 h-8 sm:w-10 sm:h-10';
+  // On duplique juste 2 fois pour avoir une boucle infinie sans "calage"
+  const duplicated = [...partners, ...partners];
 
   return (
-    <div className="relative overflow-hidden py-6 sm:py-8">
-      <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-20 bg-gradient-to-r from-[#F8FAF9] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-20 bg-gradient-to-l from-[#F8FAF9] to-transparent z-10 pointer-events-none" />
+    <div className="relative overflow-hidden py-8">
+      {/* Dégradés sur les bords */}
+      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-[#F8FAF9] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-[#F8FAF9] to-transparent z-10 pointer-events-none" />
 
-      <div className="flex animate-scroll gap-4 sm:gap-6 md:gap-8">
+      {/* Piste de défilement */}
+      <div className="flex animate-scroll gap-6 sm:gap-8">
         {duplicated.map((partner, index) => (
           <div
             key={`${partner.id}-${index}`}
-            className={`flex-shrink-0 flex flex-col items-center ${itemWidth}`}
+            className="flex-shrink-0 flex flex-col items-center w-[140px] sm:w-[160px] md:w-[180px]"
           >
             <a
-              href={partner.link || '#'}
+              href={partner.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${logoSize} bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center overflow-hidden group cursor-pointer`}
+              className="block w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center overflow-hidden group"
             >
-              {partner.logo ? (
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="w-full h-full object-contain p-2 sm:p-3 transition-transform duration-300 group-hover:scale-110"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#008751]/10 to-[#002060]/10 flex items-center justify-center group-hover:from-[#008751]/20 group-hover:to-[#002060]/20 transition-all">
-                  <svg className={`${iconInner} text-[#008751]`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-              )}
+              <div className="w-full h-full bg-gradient-to-br from-[#008751]/10 to-[#002060]/10 flex items-center justify-center group-hover:from-[#008751]/20 group-hover:to-[#002060]/20 transition-all">
+                <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[#008751]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
             </a>
-            <p className="font-heading font-bold text-[10px] sm:text-xs text-[#002060] mt-2 sm:mt-3 text-center leading-tight w-full px-1"
-               style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {String(partner.name)}
+            <p className="font-heading font-bold text-xs text-[#002060] mt-3 text-center line-clamp-2">
+              {partner.name}
             </p>
-            {partner.category && (
-              <span className="text-[8px] sm:text-[10px] text-[#666666] mt-1 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">
-                {String(partner.category)}
-              </span>
-            )}
+            <span className="text-[10px] text-[#666666] mt-1 bg-gray-100 px-2 py-0.5 rounded-full">
+              {partner.category}
+            </span>
           </div>
         ))}
       </div>
 
+      {/* Animation CSS pure - défilement continu SANS calage */}
       <style>{`
         @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.333%); }
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
         }
+        
         .animate-scroll {
-          animation: scroll ${partnersData.length * 3}s linear infinite;
+          animation: scroll ${partners.length * 4}s linear infinite;
           width: fit-content;
         }
+        
         .animate-scroll:hover {
           animation-play-state: paused;
         }

@@ -114,7 +114,7 @@ export async function deleteMessage(id) {
  */
 export async function deleteMultipleMessages(ids) {
   if (!ids || ids.length === 0) {
-    return { success: false, error: { detail: 'Aucun message selectionne.' } };
+    return { success: false, error: { detail: 'Aucun message sélectionné.' } };
   }
 
   const results = [];

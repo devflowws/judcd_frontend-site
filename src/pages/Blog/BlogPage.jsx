@@ -44,8 +44,8 @@ export default function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Actualités - {ASSOCIATION.name}</title>
-        <meta name="description" content="Restez informé des dernières actualités, événements et projets de JUDCD." />
+        <title>{t('section.blog')} - {ASSOCIATION.name}</title>
+        <meta name="description" content={t('blog.description')} />
       </Helmet>
 
       <motion.main

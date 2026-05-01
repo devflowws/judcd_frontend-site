@@ -30,14 +30,14 @@ export const ASSETS = {
 // Informations de l'association
 export const ASSOCIATION = {
   name: 'JUDCD',
-  fullName: 'Jeunes Unis pour le Developpement Communautaire Durable',
-  slogan: 'Ensemble pour un developpement durable et responsable',
-  shortDescription: 'Organisation de jeunes engages pour le developpement communautaire durable.',
-  longDescription: 'JUDCD est une association qui mobilise les jeunes afin de promouvoir des initiatives de developpement durable, d\'education citoyenne, d\'entrepreneuriat et d\'actions sociales pour ameliorer les conditions de vie des communautes.',
+  fullName: 'Jeunes Unis pour le Développement Communautaire Durable',
+  slogan: 'Ensemble pour un développement durable et responsable',
+  shortDescription: 'Organisation de jeunes engagés pour le développement communautaire durable.',
+  longDescription: 'JUDCD est une association qui mobilise les jeunes afin de promouvoir des initiatives de développement durable, d\'éducation citoyenne, d\'entrepreneuriat et d\'actions sociales pour améliorer les conditions de vie des communautés.',
   email: 'associationjudcd@gmail.com',
   phone: '+228 71661230',
   phoneDisplay: '+228 71 66 12 30',
-  address: 'Amadahome, face a la station Cap',
+  address: 'Amadahome, face à la station Cap',
   city: 'Lome',
   country: 'Togo',
   creationDate: '09/08/2024',
@@ -47,33 +47,33 @@ export const ASSOCIATION = {
 
 // Reseaux sociaux
 export const SOCIAL_LINKS = {
-  tiktok: 'https://www.tiktok.com/@associationjudcd',
-  facebook: null,
-  instagram: null,
-  twitter: null,
-  youtube: null,
-  linkedin: null,
+  tiktok: 'https://www.tiktok.com/@association.judcd?_r=1&_t=ZS-95zwQTGqj0U',
+  facebook: '#',
+  instagram: '#',
+  twitter: '#',
+  youtube: '#',
+  linkedin: '#',
 };
 
 // Mission, Vision, Valeurs
 export const MISSION = {
-  mission: 'Promouvoir le developpement communautaire durable en mobilisant la jeunesse autour d\'initiatives sociales, educatives, environnementales et economiques au benefice des communautes locales.',
-  vision: 'Construire des communautes autonomes, solidaires et resilientes ou la jeunesse joue un role central dans le developpement durable et l\'innovation sociale.',
+  mission: 'Promouvoir le développement communautaire durable en mobilisant la jeunesse autour d\'initiatives sociales, éducatives, environnementales et économiques au bénéfice des communautés locales.',
+  vision: 'Construire des communautés autonomes, solidaires et résilientes où la jeunesse joue un rôle central dans le développement durable et l\'innovation sociale.',
   values: [
-    { name: 'Solidarite', description: 'Agir ensemble pour le bien commun de nos communautes.' },
-    { name: 'Engagement Citoyen', description: 'Participer activement a la construction d\'une societe meilleure.' },
-    { name: 'Transparence', description: 'Gerer avec honnetete, clarte et responsabilite.' },
-    { name: 'Innovation Sociale', description: 'Creer des solutions nouvelles adaptees aux besoins locaux.' },
-    { name: 'Developpement Durable', description: 'Agir aujourd\'hui en pensant aux generations futures.' },
+    { name: 'Solidarité', description: 'Agir ensemble pour le bien commun de nos communautés.' },
+    { name: 'Engagement Citoyen', description: 'Participer activement à la construction d\'une société meilleure.' },
+    { name: 'Transparence', description: 'Gérer avec honnêteté, clarté et responsabilité.' },
+    { name: 'Innovation Sociale', description: 'Créer des solutions nouvelles adaptées aux besoins locaux.' },
+    { name: 'Développement Durable', description: 'Agir aujourd\'hui en pensant aux générations futures.' },
   ],
 };
 
 // Chiffres cles
 export const KEY_FIGURES = [
-  { value: 10, suffix: '+', label: 'Beneficiaires directs' },
-  { value: 2, suffix: '', label: 'Activites communautaires' },
+  { value: 10, suffix: '+', label: 'Bénéficiaires directs' },
+  { value: 2, suffix: '', label: 'Activités communautaires' },
   { value: 5, suffix: '+', label: 'Partenaires locaux' },
-  { value: 1, suffix: '', label: 'Jeunesse engagee' },
+  { value: 1, suffix: '', label: 'Jeunesse engagée' },
 ];
 
 // Services / Activites
@@ -81,44 +81,44 @@ export const SERVICES = [
   {
     id: 1,
     title: 'Formation des Jeunes',
-    description: 'Programmes de formation en leadership, entrepreneuriat et competences numeriques pour preparer la jeunesse a relever les defis de demain.',
+    description: 'Programmes de formation en leadership, entrepreneuriat et compétences numériques pour préparer la jeunesse à relever les défis de demain.',
     icon: 'academic',
-    publicCible: 'Jeunes, etudiants, jeunes diplomes',
+    publicCible: 'Jeunes, étudiants, jeunes diplômés',
   },
   {
     id: 2,
     title: 'Sensibilisation Communautaire',
-    description: 'Campagnes de sensibilisation sur la citoyennete, l\'environnement et la sante pour informer et mobiliser les populations.',
+    description: 'Campagnes de sensibilisation sur la citoyenneté, l\'environnement et la santé pour informer et mobiliser les populations.',
     icon: 'awareness',
-    publicCible: 'Communautes locales, jeunes, femmes',
+    publicCible: 'Communautés locales, jeunes, femmes',
   },
   {
     id: 3,
-    title: 'Projets de Developpement Local',
-    description: 'Initiatives concretes visant a ameliorer les conditions de vie des communautes a travers des projets participatifs.',
+    title: 'Projets de Développement Local',
+    description: 'Initiatives concrètes visant à améliorer les conditions de vie des communautés à travers des projets participatifs.',
     icon: 'development',
-    publicCible: 'Communautes locales, populations vulnerables',
+    publicCible: 'Communautés locales, populations vulnérables',
   },
   {
     id: 4,
     title: 'Accompagnement Entrepreneurial',
-    description: 'Mentorat et soutien aux projets des jeunes entrepreneurs pour stimuler l\'innovation et la creation d\'emplois.',
+    description: 'Mentorat et soutien aux projets des jeunes entrepreneurs pour stimuler l\'innovation et la création d\'emplois.',
     icon: 'entrepreneurship',
     publicCible: 'Jeunes entrepreneurs, porteurs de projets',
   },
   {
     id: 5,
     title: 'Actions Sociales et Humanitaires',
-    description: 'Actions solidaires pour soutenir les populations vulnerables et renforcer la cohesion sociale dans les communautes.',
+    description: 'Actions solidaires pour soutenir les populations vulnérables et renforcer la cohésion sociale dans les communautés.',
     icon: 'social',
-    publicCible: 'Populations vulnerables, communautes locales',
+    publicCible: 'Populations vulnérables, communautés locales',
   },
   {
     id: 6,
-    title: 'Promotion du Developpement Durable',
-    description: 'Initiatives ecologiques et environnementales pour sensibiliser et agir en faveur de la protection de notre planete.',
+    title: 'Promotion du Développement Durable',
+    description: 'Initiatives écologiques et environnementales pour sensibiliser et agir en faveur de la protection de notre planète.',
     icon: 'ecology',
-    publicCible: 'Jeunes, ecoles, communautes locales',
+    publicCible: 'Jeunes, écoles, communautés locales',
   },
 ];
 
@@ -127,73 +127,115 @@ export const EXECUTIVE_TEAM = [
   {
     id: 1,
     name: 'Yannick Komlan Kpoholo',
-    role: 'President',
+    role: 'Président',
     email: 'yannicksekkpoholo@gmail.com',
     phone: '+228 97776216',
-    bio: 'Yannick Sek Kpoholo, professionnel de la logistique et entrepreneur digital a Lome, allie rigueur et ambition. Il developpe des projets durables et inspire la jeunesse a construire une vision claire et responsable.',
-    quote: 'Servir la jeunesse, ce n\'est pas seulement preparer demain, c\'est donner un sens a aujourd\'hui.',
+    photo: '/assets/images/team/yannick-kpoholo.jpg',
+    bio: 'Yannick Sek Kpoholo, professionnel de la logistique et entrepreneur digital à Lomé, allie rigueur et ambition. Il développe des projets durables et inspire la jeunesse à construire une vision claire et responsable',
+    quote: 'Servir la jeunesse, ce n\'est pas seulement préparer demain, c\'est donner un sens à aujourd\'hui.',
   },
   {
     id: 2,
     name: 'NATO Kokou Valere',
-    role: 'Vice-President',
+    role: 'Vice-Président',
     email: 'natovalere@gmail.com',
     phone: '+228 92069284',
-    bio: 'Geologue de formation passionne par le numerique, il se specialise dans le developpement web et mobile. Il met son expertise technique au service de solutions digitales innovantes.',
+    photo: '/assets/images/team/nato-valere.jpg',
+    bio: 'Géologue de formation passionné par le numérique, il se spécialise dans le développement web et mobile. Il met son expertise technique au service de solutions digitales innovantes',
     quote: '',
   },
   {
     id: 3,
     name: 'Eliezer Moubarak RADJI',
-    role: 'Secretaire General',
+    role: 'Secrétaire Général',
     email: 'eliezermoubarakr@gmail.com',
     phone: '+228 70920830',
-    bio: 'Biologiste et physiologiste vegetal, il combine expertise technique et experience en redaction et gestion de projets, mettant ses competences au service de l\'innovation.',
+    photo: '/assets/images/team/eliezer-radji.jpg',
+    bio: 'Biologiste et physiologiste végétal, il combine expertise technique et expérience en rédaction et gestion de projets, mettant ses compétences au service de l\'innovation',
     quote: '',
   },
   {
     id: 4,
     name: 'Mohamed AKOURTANDO',
-    role: 'Tresorier',
+    role: 'Trésorier',
     email: 'Mohamedakourtando229@gmail.com',
     phone: '+228 90860685',
-    bio: 'Jeune Togolais dynamique, forme en informatique. Il met sa polyvalence technique au service de projets innovants et de la croissance de l\'association.',
+    photo: '/assets/images/team/mohamed-akourtando.jpg',
+    bio: 'Jeune Togolais dynamique, formé en informatique. Il met sa polyvalence technique au service de projets innovants et de la croissance de l\'association',
     quote: '',
   },
   {
     id: 5,
     name: 'AGBESSI Komi Elom Francois',
-    role: 'Secretaire Adjoint / Responsable des projets',
+    role: 'Secrétaire Adjoint / Responsable des projets',
     email: 'elomagbessi012@gmail.com',
     phone: '+228 90593801',
-    bio: 'Marketeur et stratege passionne, il complete son expertise par des etudes en droit pour allier vision commerciale et rigueur juridique.',
+    photo: '/assets/images/team/komi-agbessi.jpg',
+    bio: 'Marketeur et stratège passionné, il complète son expertise par des études en droit pour allier vision commerciale et rigueur juridique. Il est ainsi capable de gérer des projets avec efficacité et de développer des stratégies innovantes.',
     quote: '',
   },
 ];
 
 // Partenaires
 export const PARTNERS = [
-  'Organisations de la societe civile',
-  'Institutions locales',
-  'Associations de jeunesse',
-  'Structures educatives',
-  'Partenaires techniques et financiers',
+  {
+    id: 1,
+    name: 'Organisations de la société civile',
+    category: 'Société Civile',
+    logo: '/assets/images/partners/civil-society.png',
+    link: '#'
+  },
+  {
+    id: 2,
+    name: 'Institutions locales',
+    category: 'Institutionnel',
+    logo: '/assets/images/partners/local-institutions.png',
+    link: '#'
+  },
+  {
+    id: 3,
+    name: 'Associations de jeunesse',
+    category: 'Jeunesse',
+    logo: '/assets/images/partners/youth-associations.png',
+    link: '#'
+  },
+  {
+    id: 4,
+    name: 'Structures éducatives',
+    category: 'Éducation',
+    logo: '/assets/images/partners/educational-structures.png',
+    link: '#'
+  },
+  {
+    id: 5,
+    name: 'Partenaires techniques et financiers',
+    category: 'Finance',
+    logo: '/assets/images/partners/technical-financial.png',
+    link: '#'
+  },
+  {
+    id: 6,
+    name: 'Miabé Innovation',
+    category: 'Startup Technologique',
+    logo: '/assets/images/partners/miabeinnovation.png',
+    link: 'https://www.miabeinnovation.com'
+  }
 ];
 
 // Cibles
 export const TARGET_AUDIENCES = [
   'Jeunes',
   'Femmes',
-  'Communautes rurales et urbaines',
+  'Communautés rurales et urbaines',
   'Entrepreneurs locaux',
   'Organisations communautaires',
 ];
 
 // Types de membres
 export const MEMBER_CATEGORIES = [
-  { name: 'Membre Fondateur', description: 'Les createurs historiques de l\'association' },
-  { name: 'Membre Actif', description: 'Participant regulierement aux activites' },
-  { name: 'Membre Bienfaiteur', description: 'Soutenant financierement l\'association' },
+  { name: 'Membre Fondateur', description: 'Les créateurs historiques de l\'association' },
+  { name: 'Membre Actif', description: 'Participant régulièrement aux activités' },
+  { name: 'Membre Bienfaiteur', description: 'Soutenant financièrement l\'association' },
   { name: 'Membre d\'Honneur', description: 'Reconnaissance honorifique' },
   { name: 'Membre Partenaire', description: 'Organisations collaboratrices' },
 ];
@@ -226,28 +268,28 @@ export const API = {
 export const GALLERY_CATEGORIES = [
   'Formation des jeunes',
   'Sensibilisation communautaire',
-  'Projets de developpement local',
+  'Projets de développement local',
   'Accompagnement entrepreneurial',
   'Actions sociales',
-  'Developpement durable',
+  'Développement durable',
 ];
 
 // Textes des pages
 export const PAGE_CONTENT = {
   hero: {
-    title: 'Ensemble pour un developpement durable de nos communautes',
-    subtitle: 'Jeunes Unis pour le Developpement Communautaire Durable',
+    title: 'Ensemble pour un développement durable de nos communautés',
+    subtitle: 'Jeunes Unis pour le Développement Communautaire Durable',
     cta: {
-      primary: 'Decouvrir nos actions',
+      primary: 'Découvrir nos actions',
       secondary: 'Faire un don',
     },
   },
   about: {
     title: 'Qui sommes-nous ?',
-    content: `L'association Jeunes Unis pour le Developpement Communautaire Durable (JUDCD) est une organisation engagee qui oeuvre pour l'amelioration des conditions de vie des communautes a travers des initiatives sociales, educatives, environnementales et economiques. Convaincus que la jeunesse represente une force essentielle pour le changement, nous mobilisons les jeunes autour d'actions concretes visant a promouvoir le developpement durable, la solidarite et l'innovation sociale.`,
+    content: `L'association Jeunes Unis pour le Développement Communautaire Durable (JUDCD) est une organisation engagée qui œuvre pour l'amélioration des conditions de vie des communautés à travers des initiatives sociales, éducatives, environnementales et économiques. Convaincus que la jeunesse représente une force essentielle pour le changement, nous mobilisons les jeunes autour d'actions concrètes visant à promouvoir le développement durable, la solidarité et l'innovation sociale.`,
   },
   footer: {
-    text: 'Une jeunesse engagee pour promouvoir le developpement durable, la solidarite et l\'innovation sociale au service des communautes.',
+    text: 'Une jeunesse engagée pour promouvoir le développement durable, la solidarité et l\'innovation sociale au service des communautés.',
   },
 };
 
@@ -263,6 +305,6 @@ export const DESIGN_STYLE = 'Moderne, dynamique et professionnel';
 
 // Langues
 export const LANGUAGES = [
-  { code: 'fr', name: 'Francais', flag: 'fr' },
+  { code: 'fr', name: 'Français', flag: 'fr' },
   { code: 'en', name: 'English', flag: 'gb' },
 ];

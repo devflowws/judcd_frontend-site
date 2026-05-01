@@ -182,11 +182,11 @@ export function validateImageFile(file) {
   const maxSize = 10 * 1024 * 1024;
 
   if (!file) {
-    return { valid: false, message: 'Veuillez selectionner un fichier.' };
+    return { valid: false, message: 'Veuillez sélectionner un fichier.' };
   }
 
   if (!allowedTypes.includes(file.type)) {
-    return { valid: false, message: 'Format non autorise. Utilisez JPG, PNG, WebP ou SVG.' };
+    return { valid: false, message: 'Format non autorisé. Utilisez JPG, PNG, WebP ou SVG.' };
   }
 
   if (file.size > maxSize) {

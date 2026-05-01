@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ASSOCIATION } from '@utils/constants';
-import { useLanguage } from '@context/LanguageContext';
 import { useDonationForm } from '@hooks/useDonation';
+import SuccessModal from '@components/ui/Modal/SuccessModal';
+import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { ASSOCIATION } from '@utils/constants';
 
 const predefinedAmounts = [
   { value: 1000, label: '1 000 FCFA' },
@@ -23,6 +24,8 @@ export default function DonatePage() {
     isSuccess,
     donationReference,
     errors,
+    showSuccessModal,
+    setShowSuccessModal,
     handleChange,
     handleSubmit,
     resetForm,
@@ -35,8 +38,8 @@ export default function DonatePage() {
   return (
     <>
       <Helmet>
-        <title>Faire un don - {ASSOCIATION.name}</title>
-        <meta name="description" content="Soutenez les actions de JUDCD en faisant un don. Chaque contribution nous aide à financer nos projets communautaires." />
+        <title>{t('nav.donate')} - {ASSOCIATION.name}</title>
+        <meta name="description" content={t('donate.description')} />
       </Helmet>
 
       <motion.main
@@ -261,6 +264,16 @@ export default function DonatePage() {
           </div>
         </section>
       </motion.main>
+
+      {/* Modale de succès chic */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Promesse de don enregistrée !"
+        message="Suivez les instructions pour finaliser votre don. Merci pour votre générosité !"
+        reference={donationReference}
+        showReference={!!donationReference}
+      />
     </>
   );
 }

@@ -7,29 +7,29 @@ import FadeInView from '@components/ui/Animations/FadeInView';
 // SECTION TEMOIGNAGES JUDCD
 // ==========================================
 
-// Donnees temporaires (a remplacer par l'API)
+// Données temporaires (à remplacer par l'API)
 const testimonials = [
   {
     id: 1,
     name: 'Komi A.',
     role: 'Jeune entrepreneur',
-    content: 'Grace aux formations de JUDCD, j\'ai pu developper mes competences en entrepreneuriat et lancer mon activite. L\'accompagnement recu a ete determinant pour mon parcours.',
+    content: 'Grâce aux formations de JUDCD, j\'ai pu développer mes compétences en entrepreneuriat et lancer mon activité. L\'accompagnement reçu a été déterminant pour mon parcours.',
     rating: 5,
     avatar: null,
   },
   {
     id: 2,
     name: 'Afi M.',
-    role: 'Etudiante',
-    content: 'Les campagnes de sensibilisation m\'ont ouvert les yeux sur l\'importance du developpement durable. Aujourd\'hui, je m\'engage activement dans ma communaute.',
+    role: 'Étudiante',
+    content: 'Les campagnes de sensibilisation m\'ont ouvert les yeux sur l\'importance du développement durable. Aujourd\'hui, je m\'engage activement dans ma communauté.',
     rating: 5,
     avatar: null,
   },
   {
     id: 3,
     name: 'Koffi D.',
-    role: 'Membre de la communaute',
-    content: 'Le projet de developpement local a transforme notre quartier. JUDCD a su mobiliser les jeunes et les ressources pour un impact concret et durable.',
+    role: 'Membre de la communauté',
+    content: 'Le projet de développement local a transformé notre quartier. JUDCD a su mobiliser les jeunes et les ressources pour un impact concret et durable.',
     rating: 5,
     avatar: null,
   },
@@ -67,7 +67,7 @@ export default function Testimonials() {
             Ce qu'ils disent de nous
           </h2>
           <p className="text-[#666666] text-lg">
-            Decouvrez les temoignages de ceux qui ont beneficie de nos actions
+            Découvrez les témoignages de ceux qui ont bénéficié de nos actions
           </p>
         </FadeInView>
 

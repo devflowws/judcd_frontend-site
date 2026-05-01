@@ -178,7 +178,7 @@ export function TeamCard({
       <h3 className="font-heading font-bold text-lg text-[#002060] mb-1">{name}</h3>
       <p className="text-sm font-semibold text-[#008751] mb-3">{role}</p>
       {bio && (
-        <p className="text-sm text-[#666666] mb-3 line-clamp-3 leading-relaxed">{bio}</p>
+        <p className="text-sm text-[#666666] mb-3 line-clamp-5 leading-relaxed">{bio}</p>
       )}
       {quote && (
         <blockquote className="text-xs italic text-[#666666] border-l-2 border-[#FFD100] pl-3 text-left">

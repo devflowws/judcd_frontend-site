@@ -16,8 +16,8 @@ export default function TeamPage() {
   return (
     <>
       <Helmet>
-        <title>Notre équipe - {ASSOCIATION.name}</title>
-        <meta name="description" content={`Découvrez le bureau exécutif de ${ASSOCIATION.name}, une équipe de jeunes engagés pour le développement durable.`} />
+        <title>{t('section.team')} - {ASSOCIATION.name}</title>
+        <meta name="description" content={t('team.description', `Découvrez le bureau exécutif de ${ASSOCIATION.name}, une équipe de jeunes engagés pour le développement durable.`)} />
       </Helmet>
 
       <motion.main

@@ -16,8 +16,8 @@ export default function JoinPage() {
   return (
     <>
       <Helmet>
-        <title>Adhérer - {ASSOCIATION.name}</title>
-        <meta name="description" content="Rejoignez JUDCD et participez à nos actions de développement communautaire durable. Découvrez les catégories de membres et les avantages." />
+        <title>{t('nav.join')} - {ASSOCIATION.name}</title>
+        <meta name="description" content={t('join.description', 'Rejoignez JUDCD et participez à nos actions de développement communautaire durable. Découvrez les catégories de membres et les avantages.')} />
       </Helmet>
 
       <motion.main
@@ -46,7 +46,7 @@ export default function JoinPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Vous souhaitez vous engager pour le développement de votre communauté ? Rejoignez un réseau de jeunes et d'acteurs engagés qui travaillent ensemble pour créer un impact positif et durable.
+              {t('join.description', 'Vous souhaitez vous engager pour le développement de votre communauté ? Rejoignez un réseau de jeunes et d\'acteurs engagés qui travaillent ensemble pour créer un impact positif et durable.')}
             </motion.p>
           </div>
         </section>
@@ -148,7 +148,7 @@ export default function JoinPage() {
                   href="mailto:associationjudcd@gmail.com?subject=Demande%20d'adhésion%20JUDCD"
                   className="inline-flex items-center gap-2 px-8 py-4 bg-[#FFD100] text-[#002060] font-bold rounded-xl hover:bg-[#FFE44D] transition-all shadow-lg group"
                 >
-                  Demander votre adhésion
+                  {t('nav.join')}
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>

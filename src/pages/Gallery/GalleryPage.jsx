@@ -34,8 +34,8 @@ export default function GalleryPage() {
   return (
     <>
       <Helmet>
-        <title>Galerie photo - {ASSOCIATION.name}</title>
-        <meta name="description" content="Découvrez les photos de nos activités de développement communautaire durable au Togo." />
+        <title>{t('section.gallery')} - {ASSOCIATION.name}</title>
+        <meta name="description" content={t('gallery.description')} />
       </Helmet>
 
       <motion.main

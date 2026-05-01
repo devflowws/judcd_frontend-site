@@ -14,13 +14,13 @@ export default function Stats() {
 
   return (
     <section className="py-20 relative overflow-hidden bg-gradient-to-r from-[#008751] to-[#002060]">
-      {/* Motif decoratif */}
+      {/* Motif décoratif */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#FFD100] rounded-full translate-x-1/2 translate-y-1/2" />
       </div>
 
-      {/* Lignes decoratives */}
+      {/* Lignes décoratives */}
       <div className="absolute inset-0">
         <svg className="w-full h-full opacity-5" viewBox="0 0 1440 400" fill="none">
           <line x1="0" y1="100" x2="1440" y2="100" stroke="white" strokeWidth="2" />
@@ -48,7 +48,7 @@ export default function Stats() {
           ))}
         </div>
 
-        {/* Barre de progression decorative */}
+        {/* Barre de progression décorative */}
         <motion.div
           className="mt-16 h-1 bg-white/10 rounded-full overflow-hidden max-w-md mx-auto"
           initial={{ opacity: 0 }}

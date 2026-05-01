@@ -7,48 +7,48 @@ import { LANGUAGES } from '@utils/constants';
 
 const LanguageContext = createContext(null);
 
-// Traductions francais
+// Traductions françaises
 const fr = {
   // Navigation
   'nav.home': 'Accueil',
-  'nav.about': 'A propos',
+  'nav.about': 'À propos',
   'nav.mission': 'Nos actions',
   'nav.gallery': 'Galerie',
-  'nav.blog': 'Actualites',
+  'nav.blog': 'Actualités',
   'nav.contact': 'Contact',
-  'nav.join': 'Adherer',
+  'nav.join': 'Adhérer',
   'nav.donate': 'Faire un don',
   'nav.admin': 'Administration',
 
   // Hero
-  'hero.title': 'Ensemble pour un developpement durable de nos communautes',
-  'hero.subtitle': 'Jeunes Unis pour le Developpement Communautaire Durable',
-  'hero.cta.primary': 'Decouvrir nos actions',
+  'hero.title': 'Ensemble pour un développement durable de nos communautés',
+  'hero.subtitle': 'Jeunes Unis pour le Développement Communautaire Durable',
+  'hero.cta.primary': 'Découvrir nos actions',
   'hero.cta.secondary': 'Faire un don',
 
   // Sections communes
   'section.mission': 'Notre mission',
   'section.vision': 'Notre vision',
   'section.values': 'Nos valeurs',
-  'section.team': 'Notre equipe',
+  'section.team': 'Notre équipe',
   'section.gallery': 'Galerie photo',
-  'section.blog': 'Actualites',
+  'section.blog': 'Actualités',
   'section.contact': 'Contactez-nous',
   'section.partners': 'Nos partenaires',
-  'section.testimonials': 'Temoignages',
+  'section.testimonials': 'Témoignages',
   'section.stats': 'Quelques chiffres',
   'section.newsletter': 'Newsletter',
 
   // Footer
-  'footer.description': 'Une jeunesse engagee pour promouvoir le developpement durable, la solidarite et l\'innovation sociale au service des communautes.',
+  'footer.description': 'Une jeunesse engagée pour promouvoir le développement durable, la solidarité et l\'innovation sociale au service des communautés.',
   'footer.quickLinks': 'Liens rapides',
   'footer.contact': 'Contact',
   'footer.newsletter': 'Newsletter',
-  'footer.newsletter.placeholder': 'Votre email',
+  'footer.newsletter.placeholder': 'Votre e-mail',
   'footer.newsletter.subscribe': 'S\'inscrire',
-  'footer.rights': 'Tous droits reserves.',
-  'footer.legal': 'Mentions legales',
-  'footer.privacy': 'Politique de confidentialite',
+  'footer.rights': 'Tous droits réservés.',
+  'footer.legal': 'Mentions légales',
+  'footer.privacy': 'Politique de confidentialité',
 
   // Boutons
   'button.readMore': 'Lire la suite',
@@ -62,26 +62,26 @@ const fr = {
 
   // Formulaire de contact
   'contact.name': 'Nom complet',
-  'contact.email': 'Adresse email',
-  'contact.phone': 'Telephone',
+  'contact.email': 'Adresse e-mail',
+  'contact.phone': 'Téléphone',
   'contact.subject': 'Sujet',
   'contact.message': 'Votre message',
-  'contact.success': 'Message envoye avec succes !',
-  'contact.success.text': 'Nous vous repondrons dans les plus brefs delais.',
-  'contact.error': 'Erreur lors de l\'envoi. Veuillez reessayer.',
+  'contact.success': 'Message envoyé avec succès !',
+  'contact.success.text': 'Nous vous répondrons dans les plus brefs délais.',
+  'contact.error': 'Erreur lors de l\'envoi. Veuillez réessayer.',
 
   // Don
   'donation.title': 'Soutenir JUDCD',
-  'donation.description': 'Votre don nous aide a realiser nos projets communautaires.',
+  'donation.description': 'Votre don nous aide à réaliser nos projets communautaires.',
   'donation.amount': 'Montant (FCFA)',
   'donation.method': 'Moyen de paiement',
-  'donation.success': 'Promesse de don enregistree !',
+  'donation.success': 'Promesse de don enregistrée !',
   'donation.success.text': 'Suivez les instructions pour finaliser votre don.',
 
   // Adhesion
   'membership.title': 'Rejoindre JUDCD',
-  'membership.description': 'Devenez membre et participez a nos actions.',
-  'membership.categories': 'Categories de membres',
+  'membership.description': 'Devenez membre et participez à nos actions.',
+  'membership.categories': 'Catégories de membres',
   'membership.fee': 'Cotisation annuelle : 5 000 FCFA',
 
   // Admin
@@ -94,13 +94,21 @@ const fr = {
   'admin.messages': 'Messages',
   'admin.donations': 'Dons',
   'admin.members': 'Membres',
-  'admin.settings': 'Parametres',
+  'admin.settings': 'Paramètres',
   'admin.logout': 'Deconnexion',
+
+  // About
+  'about.founded': 'Since August 09, 2024',
+  'team.description': 'Discover the executive board of JUDCD, a team of young people committed to sustainable development.',
+  'gallery.description': 'Discover photos of our sustainable community development activities in Togo.',
+  'blog.description': 'Stay informed about the latest news, events and projects of JUDCD.',
+  'donate.description': 'Support JUDCD actions by making a donation. Each contribution helps us finance our community projects.',
+  'contact.description': 'Contact us for any questions, suggestions or collaborations.',
 
   // Etats
   'loading': 'Chargement...',
-  'noResults': 'Aucun resultat trouve.',
-  'error.generic': 'Une erreur est survenue. Veuillez reessayer.',
+  'noResults': 'Aucun résultat trouvé.',
+  'error.generic': 'Une erreur est survenue. Veuillez réessayer.',
   'error.notFound': 'Page introuvable.',
 };
 
@@ -198,9 +206,8 @@ export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
     const saved = localStorage.getItem('judcd_language');
     if (saved) return saved;
-    // Detection de la langue du navigateur
-    const browserLang = navigator.language?.split('-')[0];
-    return browserLang === 'fr' ? 'fr' : 'en';
+    // Langue par défaut : français
+    return 'fr';
   });
 
   // Persiste la langue dans le localStorage
@@ -212,7 +219,7 @@ export function LanguageProvider({ children }) {
   // Fonction de traduction
   const t = useCallback((key, fallback = '') => {
     const langTranslations = translations[language] || translations.fr;
-    return langTranslations[key] || translations.fr[key] || fallback || key;
+    return langTranslations[key] || fallback || key;
   }, [language]);
 
   // Changement de langue

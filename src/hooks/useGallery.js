@@ -244,7 +244,7 @@ export function useGalleryAdmin() {
     try {
       const result = await deletePhoto(id);
       if (result.success) {
-        toast.success('Photo supprimee.');
+        toast.success('Photo supprimée.');
         setSelectedPhotos(prev => prev.filter(pid => pid !== id));
         await fetchAllPhotos();
         return { success: true };

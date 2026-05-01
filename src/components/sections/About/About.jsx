@@ -25,34 +25,44 @@ export default function About() {
             <div className="relative">
               {/* Image principale */}
               <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
-                <div className="w-full h-full bg-gradient-to-br from-[#008751] to-[#002060] flex items-center justify-center">
-                  <div className="text-center text-white p-8">
+                <div className="w-full h-full bg-gradient-to-br from-[#008751] to-[#002060] flex items-center justify-center relative">
+                  {/* Logo JUDCD en filigrane */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-30">
+                    <img 
+                      src="/assets/images/logo2.png" 
+                      alt="JUDCD Logo"
+                      className="w-[40rem] h-[40rem] md:w-[48rem] md:h-[48rem] object-contain opacity-40 filter brightness-0 invert"
+                    />
+                  </div>
+                  
+                  {/* Contenu au premier plan */}
+                  <div className="text-center text-white p-8 relative z-10">
                     <svg className="w-24 h-24 mx-auto mb-6 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <p className="font-heading font-bold text-xl">{ASSOCIATION.name}</p>
-                    <p className="text-white/70 text-sm mt-2">Depuis le 09 Aout 2024</p>
+                    <p className="text-white/70 text-sm mt-2">{t('about.founded')}</p>
                   </div>
                 </div>
               </div>
 
               {/* Carte flottante */}
               <motion.div
-                className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-2xl p-6 max-w-xs"
+                className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-2xl p-4 sm:p-6 max-w-xs sm:max-w-sm"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-[#008751]/10 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#008751]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#008751]/10 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#008751]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                   <div>
-                    <p className="font-bold text-[#002060] text-lg">N° {ASSOCIATION.registrationNumber}</p>
-                    <p className="text-xs text-[#666666]">Association enregistree</p>
+                    <p className="font-bold text-[#002060] text-sm sm:text-lg">N° {ASSOCIATION.registrationNumber}</p>
+                    <p className="text-[10px] sm:text-xs text-[#666666]">Association enregistrée</p>
                   </div>
                 </div>
               </motion.div>

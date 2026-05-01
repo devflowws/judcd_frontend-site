@@ -55,7 +55,7 @@ export async function uploadPhoto(file, metadata = {}, onProgress = null) {
  */
 export async function uploadMultiplePhotos(files, metadata = {}, onProgress = null) {
   if (!files || files.length === 0) {
-    return { success: false, error: { detail: 'Aucun fichier selectionne.' } };
+    return { success: false, error: { detail: 'Aucun fichier sélectionné.' } };
   }
 
   const results = [];
@@ -135,7 +135,7 @@ export async function deletePhoto(id) {
  */
 export async function deleteMultiplePhotos(ids) {
   if (!ids || ids.length === 0) {
-    return { success: false, error: { detail: 'Aucune photo selectionnee.' } };
+    return { success: false, error: { detail: 'Aucune photo sélectionnée.' } };
   }
 
   const results = [];

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import {
+import { 
   submitDonation,
   verifyDonation,
   getDonations,
@@ -11,6 +11,7 @@ import {
 } from '@services/donationService';
 import { validateDonationForm } from '@utils/validators';
 import toast from 'react-hot-toast';
+import { SuccessModal } from '@components/ui/Modal';
 
 // ==========================================
 // HOOK USEDONATION - Gestion des dons
@@ -24,6 +25,7 @@ export function useDonationForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [donationReference, setDonationReference] = useState(null);
   const [errors, setErrors] = useState({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -67,7 +69,7 @@ export function useDonationForm() {
       if (result.success) {
         setIsSuccess(true);
         setDonationReference(result.data?.reference || result.data?.id);
-        toast.success('Promesse de don enregistree avec succes !');
+        setShowSuccessModal(true);
         setFormData({
           fullName: '',
           email: '',
@@ -129,6 +131,8 @@ export function useDonationForm() {
     isSuccess,
     donationReference,
     errors,
+    showSuccessModal,
+    setShowSuccessModal,
     handleChange,
     handleSubmit,
     handleVerify,

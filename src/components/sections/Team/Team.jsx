@@ -2,8 +2,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { EXECUTIVE_TEAM } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
-import { TeamCard } from '@components/ui/Card/Card';
-import FadeInView, { StaggerChildren } from '@components/ui/Animations/FadeInView';
+import { HorizontalTeamCarousel } from '@components/ui/Carousel';
+import FadeInView from '@components/ui/Animations/FadeInView';
 
 // ==========================================
 // SECTION EQUIPE JUDCD
@@ -36,21 +36,10 @@ export default function Team() {
           </p>
         </FadeInView>
 
-        {/* Grille de l'equipe */}
-        <StaggerChildren className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {displayTeam.map((member) => (
-            <TeamCard
-              key={member.id}
-              photo={member.photo}
-              name={member.name}
-              role={member.role}
-              bio={member.bio}
-              quote={member.quote}
-              email={member.email}
-              phone={member.phone}
-            />
-          ))}
-        </StaggerChildren>
+        {/* Carroussel horizontal pour l'équipe */}
+        <FadeInView>
+          <HorizontalTeamCarousel members={displayTeam} />
+        </FadeInView>
 
         {/* Citation du President */}
         {EXECUTIVE_TEAM[0]?.quote && (
