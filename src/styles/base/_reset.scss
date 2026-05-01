@@ -1,0 +1,107 @@
+// ==========================================
+// TYPOGRAPHIE JUDCD
+// ==========================================
+
+@use './variables' as *;
+
+body {
+  font-family: $font-body;
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  font-weight: 400;
+  color: $color-text;
+}
+
+h1, .h1 {
+  font-family: $font-heading;
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2, .h2 {
+  font-family: $font-heading;
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h3, .h3 {
+  font-family: $font-heading;
+  font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  font-weight: 600;
+}
+
+h4, .h4 {
+  font-family: $font-heading;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h5, .h5 {
+  font-family: $font-body;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+h6, .h6 {
+  font-family: $font-body;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.text-large {
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+.text-small {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.font-heading {
+  font-family: $font-heading;
+}
+
+.font-body {
+  font-family: $font-body;
+}
+
+.font-ui {
+  font-family: $font-ui;
+}
+
+.font-light { font-weight: 300; }
+.font-regular { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+blockquote {
+  font-family: $font-heading;
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: $color-blue;
+  border-left: 4px solid $color-green;
+  padding-left: $space-lg;
+  margin: $space-lg 0;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, $color-green, $color-green-light);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, $color-yellow, #FFA000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -1,0 +1,52 @@
+// ==========================================
+// COULEURS OFFICIELLES JUDCD
+// ==========================================
+$color-green: #008751;
+$color-green-light: #00A860;
+$color-green-dark: #006B41;
+$color-yellow: #FFD100;
+$color-yellow-light: #FFE44D;
+$color-red: #D21034;
+$color-blue: #002060;
+$color-blue-light: #003A8C;
+
+// Couleurs neutres
+$color-white: #FFFFFF;
+$color-black: #000000;
+$color-text: #333333;
+$color-text-light: #666666;
+$color-gray: #F5F5F5;
+$color-gray-dark: #E0E0E0;
+
+// Polices
+$font-heading: 'Montserrat', sans-serif;
+$font-body: 'Poppins', sans-serif;
+$font-ui: 'Roboto', sans-serif;
+
+// Breakpoints
+$mobile: 320px;
+$tablet: 768px;
+$desktop: 1024px;
+$wide: 1440px;
+
+// Espacements
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 16px;
+$space-lg: 24px;
+$space-xl: 32px;
+$space-2xl: 48px;
+$space-3xl: 64px;
+$space-4xl: 96px;
+
+// Bordures
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-full: 50%;
+
+// Ombres
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+$shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.2);

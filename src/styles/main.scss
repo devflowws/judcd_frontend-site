@@ -1,0 +1,22 @@
+@use './base/variables';
+@use './base/reset';
+@use './base/typography';
+@use './animations/transitions';
+@use './animations/parallax';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: #333333;
+    background: #FFFFFF;
+    overflow-x: hidden;
+  }
+}
