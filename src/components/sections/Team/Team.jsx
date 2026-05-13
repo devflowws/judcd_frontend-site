@@ -12,7 +12,7 @@ import FadeInView from '@components/ui/Animations/FadeInView';
 export default function Team() {
   const { t } = useLanguage();
 
-  // Afficher seulement les 4 premiers membres sur la page d'accueil
+  // Afficher seulement les 4 premiers membres sur la page d'accueil (vraies photos seulement)
   const displayTeam = EXECUTIVE_TEAM.slice(0, 4);
 
   return (

@@ -8,17 +8,17 @@ import { API } from '@utils/constants';
 /**
  * Connexion administrateur
  */
-export async function login(email, password) {
-  if (!email || !password) {
+export async function login(username, password) {
+  if (!username || !password) {
     return {
       success: false,
-      error: { detail: 'Veuillez fournir un email et un mot de passe.' },
+      error: { detail: 'Veuillez fournir un nom d\'utilisateur et un mot de passe.' },
     };
   }
 
   try {
-    const response = await post(API.endpoints.auth + 'login/', {
-      email: email.trim(),
+    const response = await post(API.endpoints.auth.login, {
+      username: username.trim(),
       password: password,
     });
 
@@ -47,12 +47,12 @@ export async function logout() {
   try {
     const refreshToken = localStorage.getItem('judcd_refresh_token');
     if (refreshToken) {
-      await post(API.endpoints.auth + 'logout/', {
+      await post(`${API.baseURL}/auth/logout/`, {
         refresh: refreshToken,
       });
     }
   } catch (error) {
-    console.error('Erreur lors de la deconnexion:', error);
+    console.error('Erreur lors de la déconnexion:', error);
   } finally {
     clearAuthTokens();
     window.location.href = '/admin/login';
@@ -67,11 +67,11 @@ export async function getCurrentUser() {
   if (!token) {
     return {
       success: false,
-      error: { detail: 'Non authentifie.' },
+      error: { detail: 'Non authentifié.' },
     };
   }
 
-  return await post(API.endpoints.auth + 'me/', {});
+  return await get(`${API.baseURL}/auth/me/`);
 }
 
 /**
@@ -85,7 +85,7 @@ export async function changePassword(currentPassword, newPassword) {
     };
   }
 
-  return await post(API.endpoints.auth + 'change-password/', {
+  return await post(`${API.baseURL}/auth/change-password/`, {
     current_password: currentPassword,
     new_password: newPassword,
   });
@@ -102,7 +102,7 @@ export async function requestPasswordReset(email) {
     };
   }
 
-  return await post(API.endpoints.auth + 'password-reset/', {
+  return await post(`${API.baseURL}/auth/password-reset/`, {
     email: email.trim(),
   });
 }
@@ -118,7 +118,7 @@ export async function confirmPasswordReset(token, newPassword) {
     };
   }
 
-  return await post(API.endpoints.auth + 'password-reset/confirm/', {
+  return await post(`${API.baseURL}/auth/password-reset/confirm/`, {
     token: token,
     new_password: newPassword,
   });
@@ -149,7 +149,7 @@ export async function refreshAccessToken() {
   }
 
   try {
-    const response = await post(API.endpoints.auth + 'token/refresh/', {
+    const response = await post(API.endpoints.auth.refresh, {
       refresh: refreshToken,
     });
 

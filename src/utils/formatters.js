@@ -166,6 +166,50 @@ export function toQueryString(params) {
 }
 
 /**
+ * Formate une date en format court
+ * Exemple: "15/03/2024"
+ */
+export function formatDateShort(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+}
+
+/**
+ * Formate une date en format long
+ * Exemple: "15 mars 2024"
+ */
+export function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+}
+
+/**
+ * Formate une date avec heure
+ * Exemple: "15 mars 2024 à 14:30"
+ */
+export function formatDateTime(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+/**
  * Parse une query string en objet
  */
 export function parseQueryString(queryString) {

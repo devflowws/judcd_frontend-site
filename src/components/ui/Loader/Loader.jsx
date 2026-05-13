@@ -133,3 +133,32 @@ export function CardSkeleton() {
     </div>
   );
 }
+
+// État vide pour les listes
+export function EmptyState({ 
+  title = "Aucun élément trouvé", 
+  description = "Il n'y a rien à afficher pour le moment.",
+  icon = null,
+  action = null 
+}) {
+  return (
+    <div className="text-center py-16">
+      {icon && (
+        <div className="w-20 h-20 mx-auto mb-6 text-gray-300">
+          {icon}
+        </div>
+      )}
+      <h3 className="font-heading font-bold text-xl text-gray-600 mb-3">
+        {title}
+      </h3>
+      <p className="text-gray-500 mb-8 max-w-md mx-auto">
+        {description}
+      </p>
+      {action && (
+        <div className="flex justify-center">
+          {action}
+        </div>
+      )}
+    </div>
+  );
+}

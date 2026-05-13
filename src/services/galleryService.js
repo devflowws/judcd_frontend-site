@@ -17,7 +17,7 @@ export async function getPhotos(params = {}) {
     ...(params.ordering && { ordering: params.ordering }),
   };
 
-  return await get(API.endpoints.gallery, queryParams);
+  return await get(API.endpoints.public.gallery, queryParams);
 }
 
 /**
@@ -27,7 +27,7 @@ export async function getPhotoById(id) {
   if (!id) {
     return { success: false, error: { detail: 'ID de la photo requis.' } };
   }
-  return await get(`${API.endpoints.gallery}${id}/`);
+  return await get(`${API.endpoints.public.gallery}${id}/`);
 }
 
 /**
@@ -47,7 +47,7 @@ export async function uploadPhoto(file, metadata = {}, onProgress = null) {
   if (metadata.is_published !== undefined) formData.append('is_published', metadata.is_published);
   if (metadata.order !== undefined) formData.append('order', metadata.order);
 
-  return await upload(API.endpoints.gallery, formData, onProgress);
+  return await upload(API.endpoints.admin.galerie, formData, onProgress);
 }
 
 /**
@@ -105,7 +105,7 @@ export async function updatePhoto(id, data) {
     return { success: false, error: { detail: 'ID de la photo requis.' } };
   }
 
-  return await put(`${API.endpoints.gallery}${id}/`, data);
+  return await put(`${API.endpoints.admin.galerie}${id}/`, data);
 }
 
 /**
@@ -116,7 +116,7 @@ export async function patchPhoto(id, data) {
     return { success: false, error: { detail: 'ID de la photo requis.' } };
   }
 
-  return await put(`${API.endpoints.gallery}${id}/`, data);
+  return await put(`${API.endpoints.admin.galerie}${id}/`, data);
 }
 
 /**
@@ -127,7 +127,7 @@ export async function deletePhoto(id) {
     return { success: false, error: { detail: 'ID de la photo requis.' } };
   }
 
-  return await del(`${API.endpoints.gallery}${id}/`);
+  return await del(`${API.endpoints.admin.galerie}${id}/`);
 }
 
 /**
@@ -161,7 +161,7 @@ export async function deleteMultiplePhotos(ids) {
  * Recupere les categories de la galerie
  */
 export async function getGalleryCategories() {
-  return await get(API.endpoints.gallery + 'categories/');
+  return await get(API.endpoints.public.gallery + 'categories/');
 }
 
 /**

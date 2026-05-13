@@ -20,8 +20,14 @@ let accessToken = localStorage.getItem('judcd_access_token') || null;
 // Intercepteur de requete : injection du token JWT
 apiClient.interceptors.request.use(
   (config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    // Toujours essayer de récupérer le token le plus récent
+    const currentToken = localStorage.getItem('judcd_access_token');
+    if (currentToken) {
+      accessToken = currentToken;
+      config.headers.Authorization = `Bearer ${currentToken}`;
+      console.log('Token envoyé:', currentToken.substring(0, 20) + '...');
+    } else {
+      console.warn('Aucun token d\'authentification trouvé');
     }
     return config;
   },
@@ -45,7 +51,7 @@ apiClient.interceptors.response.use(
       const refreshToken = localStorage.getItem('judcd_refresh_token');
       if (refreshToken) {
         try {
-          const response = await axios.post(`${API.baseURL}/auth/token/refresh/`, {
+          const response = await axios.post(`${API.baseURL}/refresh/`, {
             refresh: refreshToken,
           });
           
