@@ -17,7 +17,7 @@ export async function login(email, password) {
   }
 
   try {
-    const response = await post(API.endpoints.auth + 'login/', {
+    const response = await post(API.endpoints.auth.login, {
       email: email.trim(),
       password: password,
     });
@@ -41,22 +41,11 @@ export async function login(email, password) {
 }
 
 /**
- * Deconnexion
+ * Deconnexion - Nettoyage côté client (pas d'endpoint logout nécessaire)
  */
 export async function logout() {
-  try {
-    const refreshToken = localStorage.getItem('judcd_refresh_token');
-    if (refreshToken) {
-      await post(API.endpoints.auth + 'logout/', {
-        refresh: refreshToken,
-      });
-    }
-  } catch (error) {
-    console.error('Erreur lors de la deconnexion:', error);
-  } finally {
-    clearAuthTokens();
-    window.location.href = '/admin/login';
-  }
+  clearAuthTokens();
+  window.location.href = '/admin/login';
 }
 
 /**
@@ -149,7 +138,7 @@ export async function refreshAccessToken() {
   }
 
   try {
-    const response = await post(API.endpoints.auth + 'token/refresh/', {
+    const response = await post(API.endpoints.auth.refresh, {
       refresh: refreshToken,
     });
 

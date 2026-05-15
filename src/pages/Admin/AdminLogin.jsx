@@ -75,7 +75,7 @@ export default function AdminLogin() {
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5" method='POST'>
               <div>
                 <label htmlFor="email" className="block text-sm font-semibold text-[#333333] mb-2">
                   Email

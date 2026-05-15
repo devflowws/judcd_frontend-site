@@ -253,14 +253,23 @@ export const PAYMENT_METHODS = [
 export const API = {
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
   endpoints: {
-    gallery: '/gallery/photos/',
-    blog: '/blog/posts/',
-    contact: '/contact/messages/',
-    members: '/members/',
-    donations: '/donations/',
-    pages: '/pages/',
-    settings: '/site-settings/',
-    auth: '/auth/',
+    // Authentification
+    auth: {
+      login: '/login/',
+      refresh: '/refresh/',
+    },
+    // Ressources principales
+    action: '/action/',
+    contact: '/contact/',
+    don: '/don/',
+    galerie: '/galerie-action/',
+    membres: '/membre-equipe/',
+    newsletter: '/newsletter/',
+    partenaires: '/partenaire/',
+    temoignages: '/temoignage/',
+    typeAction: '/type-action/',
+    typeActualite: '/type-actualite/',
+    typePartenaire: '/type-partenaire/',
   },
 };
 
