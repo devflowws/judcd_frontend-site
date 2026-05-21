@@ -130,7 +130,7 @@ export const EXECUTIVE_TEAM = [
     role: 'Président',
     email: 'yannicksekkpoholo@gmail.com',
     phone: '+228 97776216',
-    photo: '/assets/images/team/yannick-kpoholo.jpg',
+    photo: '/assets/images/team/yannik.png',
     bio: 'Yannick Sek Kpoholo, professionnel de la logistique et entrepreneur digital à Lomé, allie rigueur et ambition. Il développe des projets durables et inspire la jeunesse à construire une vision claire et responsable',
     quote: 'Servir la jeunesse, ce n\'est pas seulement préparer demain, c\'est donner un sens à aujourd\'hui.',
   },
@@ -140,7 +140,7 @@ export const EXECUTIVE_TEAM = [
     role: 'Vice-Président',
     email: 'natovalere@gmail.com',
     phone: '+228 92069284',
-    photo: '/assets/images/team/nato-valere.jpg',
+    photo: '/assets/images/team/valere.jpeg',
     bio: 'Géologue de formation passionné par le numérique, il se spécialise dans le développement web et mobile. Il met son expertise technique au service de solutions digitales innovantes',
     quote: '',
   },
@@ -150,7 +150,7 @@ export const EXECUTIVE_TEAM = [
     role: 'Secrétaire Général',
     email: 'eliezermoubarakr@gmail.com',
     phone: '+228 70920830',
-    photo: '/assets/images/team/eliezer-radji.jpg',
+    photo: '/assets/images/team/eliezer.jpeg',
     bio: 'Biologiste et physiologiste végétal, il combine expertise technique et expérience en rédaction et gestion de projets, mettant ses compétences au service de l\'innovation',
     quote: '',
   },
@@ -160,7 +160,7 @@ export const EXECUTIVE_TEAM = [
     role: 'Trésorier',
     email: 'Mohamedakourtando229@gmail.com',
     phone: '+228 90860685',
-    photo: '/assets/images/team/mohamed-akourtando.jpg',
+    photo: '/assets/images/team/mohamed.jpeg',
     bio: 'Jeune Togolais dynamique, formé en informatique. Il met sa polyvalence technique au service de projets innovants et de la croissance de l\'association',
     quote: '',
   },
@@ -170,8 +170,18 @@ export const EXECUTIVE_TEAM = [
     role: 'Secrétaire Adjoint / Responsable des projets',
     email: 'elomagbessi012@gmail.com',
     phone: '+228 90593801',
-    photo: '/assets/images/team/komi-agbessi.jpg',
+    photo: '/assets/images/team/elom.jpeg',
     bio: 'Marketeur et stratège passionné, il complète son expertise par des études en droit pour allier vision commerciale et rigueur juridique. Il est ainsi capable de gérer des projets avec efficacité et de développer des stratégies innovantes.',
+    quote: '',
+  },
+  {
+    id: 6,
+    name: 'METSOKO Wateba Othniel',
+    role: 'Conseiller n°1',
+    email: 'ametsoko@gmail.com',
+    phone: '90686585 / 97551634',
+    photo: '/assets/images/team/othniel.jpeg',
+    bio: 'Biographie en attente.',
     quote: '',
   },
 ];
@@ -180,41 +190,48 @@ export const EXECUTIVE_TEAM = [
 export const PARTNERS = [
   {
     id: 1,
-    name: 'Organisations de la société civile',
-    category: 'Société Civile',
-    logo: '/assets/images/partners/civil-society.png',
-    link: '#'
+    name: 'Dynace Global',
+    category: 'Santé et Bien-être',
+    logo: '/assets/images/partners/dynaceglobal.png',
+    link: 'https://www.dynaceglobal.com'
   },
   {
     id: 2,
-    name: 'Institutions locales',
-    category: 'Institutionnel',
-    logo: '/assets/images/partners/local-institutions.png',
+    name: 'CEFOPEAV',
+    category: 'Formation Professionnelle',
+    logo: '/assets/images/partners/cefopeav.png',
     link: '#'
   },
   {
     id: 3,
-    name: 'Associations de jeunesse',
-    category: 'Jeunesse',
-    logo: '/assets/images/partners/youth-associations.png',
+    name: 'HTC',
+    category: 'Technologie',
+    logo: '/assets/images/partners/htc.png',
     link: '#'
   },
   {
     id: 4,
-    name: 'Structures éducatives',
-    category: 'Éducation',
-    logo: '/assets/images/partners/educational-structures.png',
+    name: 'Oprinx',
+    category: 'Services Numériques',
+    logo: '/assets/images/partners/oprinx.png',
     link: '#'
   },
   {
     id: 5,
-    name: 'Partenaires techniques et financiers',
-    category: 'Finance',
-    logo: '/assets/images/partners/technical-financial.png',
+    name: 'The Queen',
+    category: 'Mode et Lifestyle',
+    logo: '/assets/images/partners/thequeen.png',
     link: '#'
   },
   {
     id: 6,
+    name: 'UL Chess Club',
+    category: 'Jeux et Échecs',
+    logo: '/assets/images/partners/ulchessclub.png',
+    link: '#'
+  },
+  {
+    id: 7,
     name: 'Miabé Innovation',
     category: 'Startup Technologique',
     logo: '/assets/images/partners/miabeinnovation.png',
@@ -251,7 +268,7 @@ export const PAYMENT_METHODS = [
 
 // Endpoints API
 export const API = {
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+  baseURL:'http://localhost:8000/api/v1',
   endpoints: {
     // Authentification
     auth: {

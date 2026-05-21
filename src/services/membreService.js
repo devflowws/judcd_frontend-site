@@ -2,9 +2,9 @@ import { get, post, put, patch, del } from './api';
 import { API } from '@utils/constants';
 
 // ==========================================
-// SERVICE MEMBRES EQUIPE
+// SERVICE MEMBRES EQUIPE 
 // ==========================================
-
+  
 export async function getMembres(params = {}) {
   return await get(API.endpoints.membres, { params });
 }

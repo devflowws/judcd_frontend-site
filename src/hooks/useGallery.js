@@ -291,4 +291,8 @@ export function useGalleryAdmin() {
   };
 }
 
+// ==========================================
+// HOOK USEGALLERYADMIN - Gestion admin de la galerie
+// ==========================================
+
 export default useGallery;

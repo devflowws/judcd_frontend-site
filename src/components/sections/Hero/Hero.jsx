@@ -16,7 +16,6 @@ export default function Hero() {
       {/* Fond parallaxe */}
       <div className="absolute inset-0">
         <img 
-          // src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1932&auto=format&fit=crop"
           src='/assets/images/hero-1.jpg'
           alt="Jeunesse africaine engagée"
           className="absolute inset-0 w-full h-full object-cover"

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { ASSOCIATION, MEMBER_CATEGORIES, MEMBERSHIP_FEE } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
@@ -144,15 +145,15 @@ export default function JoinPage() {
                 <p className="text-white/70 text-sm mb-8">
                   L'adhésion est ouverte à toute personne partageant les valeurs et la vision de l'association.
                 </p>
-                <a
-                  href="mailto:associationjudcd@gmail.com?subject=Demande%20d'adhésion%20JUDCD"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-[#FFD100] text-[#002060] font-bold rounded-xl hover:bg-[#FFE44D] transition-all shadow-lg group"
+                <Link
+                  to="/inscription"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-[#FFD100] text-[#002060] font-bold rounded-xl hover:bg-[#FFE44D] transition-all shadow-lg shadow-yellow-500/25 group text-lg"
                 >
-                  {t('nav.join')}
+                  Je veux adhérer maintenant
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
-                </a>
+                </Link>
               </div>
             </FadeInView>
           </div>
