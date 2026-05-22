@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { ASSOCIATION, GALLERY_CATEGORIES } from '@utils/constants';
+import { ASSOCIATION } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import { useGallery } from '@hooks/useGallery';
 import { ImageModal } from '@components/ui/Modal/Modal';
@@ -10,14 +10,43 @@ import FadeInView from '@components/ui/Animations/FadeInView';
 
 export default function GalleryPage() {
   const { t } = useLanguage();
-  const { photos, isLoading, activeCategory, changeCategory, fetchPhotos, nextPage, previousPage, page, totalPages } = useGallery();
+  const { 
+    photos, 
+    isLoading, 
+    activeCategory, 
+    changeCategory, 
+    fetchPhotos, 
+    nextPage, 
+    previousPage, 
+    page, 
+    totalPages 
+  } = useGallery();
+  
   const [selectedImage, setSelectedImage] = useState(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [categories, setCategories] = useState(['all']);
 
+  // Chargement initial des photos de la page globale
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchPhotos({ pageSize: 12 });
-  }, []);
+    fetchPhotos({ pageSize: 12, page: 1 });
+  }, [fetchPhotos]);
+
+  // Extraction dynamique des filtres de catégories basés sur la réponse de l'API
+  useEffect(() => {
+    if (photos && photos.length > 0) {
+      const uniqueCategories = [
+        'all',
+        ...new Set(photos.map(p => p.category).filter(Boolean))
+      ];
+      
+      // On fige la liste des boutons uniquement lorsque l'utilisateur est sur l'onglet global "all"
+      // afin d'éviter que les autres boutons disparaissent lorsqu'un filtre restrictif est appliqué
+      if (!activeCategory) {
+        setCategories(uniqueCategories);
+      }
+    }
+  }, [photos, activeCategory]);
 
   const openLightbox = (photo) => {
     setSelectedImage(photo);
@@ -29,7 +58,10 @@ export default function GalleryPage() {
     setSelectedImage(null);
   };
 
-  const categories = ['all', ...GALLERY_CATEGORIES];
+  const handleCategoryChange = (category) => {
+    const targetCategory = category === 'all' ? null : category;
+    changeCategory(targetCategory);
+  };
 
   return (
     <>
@@ -69,14 +101,14 @@ export default function GalleryPage() {
           </div>
         </section>
 
-        {/* Filtres */}
+        {/* Filtres collants */}
         <section className="py-10 bg-white border-b border-gray-100 sticky top-20 z-30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap justify-center gap-3">
               {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => changeCategory(category === 'all' ? null : category)}
+                  onClick={() => handleCategoryChange(category)}
                   className={`px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ${
                     (category === 'all' && !activeCategory) || activeCategory === category
                       ? 'bg-[#008751] text-white shadow-lg shadow-green-500/25'
@@ -90,7 +122,7 @@ export default function GalleryPage() {
           </div>
         </section>
 
-        {/* Grille */}
+        {/* Grille principale */}
         <section className="py-16 bg-[#F8FAF9] min-h-[60vh]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {isLoading ? (
@@ -152,7 +184,7 @@ export default function GalleryPage() {
                   </AnimatePresence>
                 </motion.div>
 
-                {/* Pagination */}
+                {/* Barre de Pagination Django Rest Framework */}
                 {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-4 mt-12">
                     <button
@@ -164,9 +196,11 @@ export default function GalleryPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
+                    
                     <span className="text-[#666666] font-medium">
                       Page {page} sur {totalPages}
                     </span>
+                    
                     <button
                       onClick={nextPage}
                       disabled={page >= totalPages}
@@ -184,6 +218,7 @@ export default function GalleryPage() {
         </section>
       </motion.main>
 
+      {/* Lightbox */}
       <ImageModal
         isOpen={isLightboxOpen}
         onClose={closeLightbox}

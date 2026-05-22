@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { getMembres } from '../../../services/membreService';
 
 // ==========================================
 // CARTE REUTILISABLE JUDCD
@@ -139,17 +140,12 @@ export function ImageCard({
 }
 
 // Carte membre equipe
-export function TeamCard({
-  photo,
-  name,
-  role,
-  bio,
-  quote,
-  email,
-  phone,
-  className = '',
-  ...props
-}) {
+
+// 1. COMPOSANT : La carte individuelle (Simple et réutilisable)
+export function TeamCard({ member, className = '', ...props }) {
+  // Sécurité si aucun membre n'est passé
+  if (!member) return null;
+
   return (
     <motion.div
       className={`bg-white rounded-xl p-6 shadow-lg text-center group hover:shadow-xl transition-all duration-300 ${className}`}
@@ -160,41 +156,48 @@ export function TeamCard({
       whileHover={{ y: -4 }}
       {...props}
     >
+      {/* Photo ou Initiales */}
       <div className="relative w-24 h-24 mx-auto mb-4">
-        {photo ? (
+        {member.photo ? (
           <img
-            src={photo}
-            alt={name}
+            src={member.photo}
+            alt={member.name}
             className="w-full h-full object-cover rounded-full border-4 border-[#008751]"
             loading="lazy"
           />
         ) : (
           <div className="w-full h-full rounded-full bg-[#008751] flex items-center justify-center text-white text-2xl font-bold">
-            {name?.charAt(0) || '?'}
+            {member.name?.charAt(0) || '?'}
           </div>
         )}
         <div className="absolute inset-0 rounded-full border-4 border-[#FFD100] opacity-0 group-hover:opacity-100 transition-opacity scale-110" />
       </div>
-      <h3 className="font-heading font-bold text-lg text-[#002060] mb-1">{name}</h3>
-      <p className="text-sm font-semibold text-[#008751] mb-3">{role}</p>
-      {bio && (
-        <p className="text-sm text-[#666666] mb-3 line-clamp-5 leading-relaxed">{bio}</p>
+
+      {/* Informations textuelles */}
+      <h3 className="font-heading font-bold text-lg text-[#002060] mb-1">{member.name}</h3>
+      <p className="text-sm font-semibold text-[#008751] mb-3">{member.role}</p>
+      
+      {member.bio && (
+        <p className="text-sm text-[#666666] mb-3 line-clamp-5 leading-relaxed">{member.bio}</p>
       )}
-      {quote && (
+      
+      {member.quote && (
         <blockquote className="text-xs italic text-[#666666] border-l-2 border-[#FFD100] pl-3 text-left">
-          "{quote}"
+          "{member.quote}"
         </blockquote>
       )}
+
+      {/* Réseaux et Contacts */}
       <div className="flex justify-center gap-3 mt-4">
-        {email && (
-          <a href={`mailto:${email}`} className="text-[#008751] hover:text-[#006B41] transition-colors" title="Email">
+        {member.email && (
+          <a href={`mailto:${member.email}`} className="text-[#008751] hover:text-[#006B41] transition-colors" title="Email">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </a>
         )}
-        {phone && (
-          <a href={`tel:${phone.replace(/\s+/g, '')}`} className="text-[#008751] hover:text-[#006B41] transition-colors" title="Telephone">
+        {member.phone && (
+          <a href={`tel:${member.phone.replace(/\s+/g, '')}`} className="text-[#008751] hover:text-[#006B41] transition-colors" title="Téléphone">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
@@ -204,6 +207,99 @@ export function TeamCard({
     </motion.div>
   );
 }
+
+
+// export function TeamCard() {
+
+  
+
+//     const [members, setMembers] = useState([]);
+  
+//     useEffect(
+//       ()=>{
+  
+//         const fetchMembers = async ()=>{
+//           const response = getMembres();
+  
+//           const rawdata = response && response.data? response.data : [];
+  
+//           const MappedData = rawdata.map(member => ({
+//             id: member.id,
+//             name: member.nom_complet, // Transforme nom_complet en name
+//             role: member.role,
+//             photo: member.photo,
+//             phone: member.telephone,  
+//             email: member.email,
+//             bio: member.infos,        // Transforme infos en bio
+//             reseaux: member.reseaux_sociaux || {},
+//             quote: member.citation || ""
+//           }));
+  
+//           setMembers(MappedData);
+//         }
+  
+//         fetchMembers();
+//       }, []
+//     );
+  
+  
+//   return (
+//     <motion.div
+//       className={`bg-white rounded-xl p-6 shadow-lg text-center group hover:shadow-xl transition-all duration-300 ${className}`}
+//       initial={{ opacity: 0, y: 30 }}
+//       whileInView={{ opacity: 1, y: 0 }}
+//       viewport={{ once: true }}
+//       transition={{ duration: 0.5 }}
+//       whileHover={{ y: -4 }}
+//       {...props}
+//     >
+//       {members.map((member, index) => (
+//         <div className="relative w-24 h-24 mx-auto mb-4">
+//           {member.photo ? (
+//             <img
+//               src={member.photo}
+//               alt={member.name}
+//               className="w-full h-full object-cover rounded-full border-4 border-[#008751]"
+//               loading="lazy"
+//             />
+//           ) : (
+//             <div className="w-full h-full rounded-full bg-[#008751] flex items-center justify-center text-white text-2xl font-bold">
+//               {member.name?.charAt(0) || '?'}
+//             </div>
+//           )}
+//           <div className="absolute inset-0 rounded-full border-4 border-[#FFD100] opacity-0 group-hover:opacity-100 transition-opacity scale-110" />
+//         </div>
+//       ))}
+     
+//       {/* <h3 className="font-heading font-bold text-lg text-[#002060] mb-1">{name}</h3>
+//       <p className="text-sm font-semibold text-[#008751] mb-3">{role}</p>
+//       {bio && (
+//         <p className="text-sm text-[#666666] mb-3 line-clamp-5 leading-relaxed">{bio}</p>
+//       )}
+//       {quote && (
+//         <blockquote className="text-xs italic text-[#666666] border-l-2 border-[#FFD100] pl-3 text-left">
+//           "{quote}"
+//         </blockquote>
+//       )}
+//       <div className="flex justify-center gap-3 mt-4">
+//         {email && (
+//           <a href={`mailto:${email}`} className="text-[#008751] hover:text-[#006B41] transition-colors" title="Email">
+//             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+//             </svg>
+//           </a>
+//         )}
+//         {phone && (
+//           <a href={`tel:${phone.replace(/\s+/g, '')}`} className="text-[#008751] hover:text-[#006B41] transition-colors" title="Telephone">
+//             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+//             </svg>
+//           </a>
+//         )}
+//       </div> */}
+//     </motion.div>
+//   );
+// }
 
 // Carte statistique
 export function StatCard({

@@ -51,7 +51,7 @@ apiClient.interceptors.response.use(
       const refreshToken = localStorage.getItem('judcd_refresh_token');
       if (refreshToken) {
         try {
-          const response = await axios.post(`${API.baseURL}/refresh/`, {
+          const response = await axios.post(`${API.baseURL}${API.endpoints.auth.refresh}`, {
             refresh: refreshToken,
           });
           

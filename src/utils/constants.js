@@ -268,49 +268,26 @@ export const PAYMENT_METHODS = [
 
 // Endpoints API
 export const API = {
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+  baseURL:'http://localhost:8000/api/v1',
   endpoints: {
     // Authentification
     auth: {
       login: '/login/',
       refresh: '/refresh/',
     },
-    // Endpoints publics (sans authentification)
-    public: {
-      partenaires: '/public/partenaires/',
-      team: '/public/team/',
-      actions: '/public/actions/',
-      temoignages: '/public/temoignages/',
-      typesActions: '/public/types-actions/',
-      typesPartenaires: '/public/types-partenaires/',
-      contact: '/public/contact/',
-      newsletter: '/public/newsletter/',
-      donation: '/public/donation/',
-      temoignage: '/public/temoignage/',
-      stats: '/public/stats/',
-      gallery: '/public/galerie-action/',
-    },
-    // Endpoints admin (avec authentification)
-    admin: {
-      contact: '/contact/',
-      newsletter: '/newsletter/',
-      partenaires: '/partenaire/',
-      typesPartenaire: '/type-partenaire/',
-      donations: '/don/',
-      team: '/membre-equipe/',
-      actions: '/action/',
-      typesAction: '/type-action/',
-      galerie: '/galerie-action/',
-      galerieActions: '/galerie-action/',
-      temoignages: '/temoignage/',
-      typesActualite: '/type-actualite/',
-      adhesions: {
-        list: '/admin/adhesions/',
-        detail: '/admin/adhesions/',
-        action: '/admin/adhesions/',
-        statistiques: '/admin/adhesions/statistiques/',
-      },
-    },
+    // Ressources principales
+    action: '/action/',
+    contact: '/contact/',
+    don: '/don/',
+    galerie: '/galerie-action/',
+    membres: '/membre-equipe/',
+    newsletter: '/newsletter/',
+    partenaires: '/partenaire/',
+    temoignages: '/temoignage/',
+    typeAction: '/type-action/',
+    typeActualite: '/type-actualite/',
+    actualite: '/actualite/',
+    typePartenaire: '/type-partenaire/',
   },
 };
 

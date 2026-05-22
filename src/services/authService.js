@@ -18,7 +18,7 @@ export async function login(username, password) {
 
   try {
     const response = await post(API.endpoints.auth.login, {
-      username: username.trim(),
+      email: email.trim(),
       password: password,
     });
 
@@ -41,7 +41,7 @@ export async function login(username, password) {
 }
 
 /**
- * Deconnexion
+ * Deconnexion - Nettoyage côté client (pas d'endpoint logout nécessaire)
  */
 export async function logout() {
   try {

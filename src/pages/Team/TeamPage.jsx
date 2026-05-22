@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { ASSOCIATION, EXECUTIVE_TEAM } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import { TeamCard } from '@components/ui/Card/Card';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { getMembres } from '../../services/membreService';
 
 export default function TeamPage() {
   const { t } = useLanguage();
@@ -12,6 +13,51 @@ export default function TeamPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchMembers = async () => {
+      try {
+        const response = await getMembres(); // Ajout de await si c'est une promesse asynchrone
+        const rawdata = response && response.data ? response.data : [];
+
+        const mappedData = rawdata.map(member => ({
+          id: member.id,
+          name: member.nom_complet,
+          role: member.role,
+          photo: member.photo,
+          phone: member.telephone,
+          email: member.email,
+          bio: member.infos,
+          reseaux: member.reseaux_sociaux || {},
+          quote: member.citation || ""
+        }));
+
+        // if (isMounted) {
+        //   setMembers(mappedData);
+        //   setLoading(false);
+        // }
+        setMembers(mappedData);
+        setLoading(false);
+
+      } catch (error) {
+        console.error("Erreur lors de la récupération des membres :", error);
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchMembers();
+    return () => { isMounted = false; };
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-20">Chargement des membres...</div>;
+  }
+
 
   return (
     <>
@@ -56,17 +102,10 @@ export default function TeamPage() {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {EXECUTIVE_TEAM.map((member, index) => (
-                <FadeInView key={member.id} delay={index * 0.1}>
-                  <TeamCard
-                    photo={member.photo}
-                    name={member.name}
-                    role={member.role}
-                    bio={member.bio}
-                    quote={member.quote}
-                    email={member.email}
-                    phone={member.phone}
-                  />
+              {members.map((member, index) => (
+                <FadeInView key={member.id || index} delay={index * 0.1}>
+                  {/* On passe le membre actuel en prop à la carte */}
+                  <TeamCard member={member} />
                 </FadeInView>
               ))}
             </div>

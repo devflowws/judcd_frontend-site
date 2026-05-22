@@ -22,6 +22,12 @@ export async function getPosts(params = {}) {
   return await get(API.endpoints.blog, queryParams);
 }
 
+
+export async function getActualites(params = {}) {
+  return await get(API.endpoints.actualite, { params });
+}
+
+
 /**
  * Recupere un article par son slug
  */

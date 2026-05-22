@@ -8,6 +8,11 @@ import { ImageModal } from '@components/ui/Modal/Modal';
 import { Spinner } from '@components/ui/Loader/Loader';
 import { useGallery } from '@hooks/useGallery';
 
+
+
+
+
+
 // ==========================================
 // SECTION GALERIE JUDCD
 // ==========================================
@@ -17,10 +22,27 @@ export default function Gallery() {
   const { photos, isLoading, activeCategory, changeCategory, fetchPhotos } = useGallery();
   const [selectedImage, setSelectedImage] = useState(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [categories, setCategories] = useState(['all']);
 
+  // Chargement initial des photos
   useEffect(() => {
     fetchPhotos({ pageSize: 8 });
-  }, []);
+  }, [fetchPhotos]);
+
+  // Extraction dynamique des catégories présentes dans les photos pour créer les filtres
+  useEffect(() => {
+    if (photos && photos.length > 0) {
+      const uniqueCategories = [
+        'all',
+        ...new Set(photos.map(p => p.category).filter(Boolean))
+      ];
+      // On ne met à jour les filtres que si on est sur la vue "Toutes les photos"
+      // afin d'éviter que les boutons des autres catégories disparaissent au filtrage
+      if (!activeCategory) {
+        setCategories(uniqueCategories);
+      }
+    }
+  }, [photos, activeCategory]);
 
   const openLightbox = (photo) => {
     setSelectedImage(photo);
@@ -32,13 +54,11 @@ export default function Gallery() {
     setSelectedImage(null);
   };
 
-  const categories = ['all', ...GALLERY_CATEGORIES];
-
   return (
     <section id="gallery" className="py-20 md:py-28 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* En-tete */}
+        {/* En-tête */}
         <FadeInView className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-sm font-semibold text-[#008751] uppercase tracking-wider mb-3 block">
             {t('section.gallery')}
@@ -47,11 +67,11 @@ export default function Gallery() {
             Nos actions en images
           </h2>
           <p className="text-[#666666] text-lg">
-            Decouvrez les moments forts de nos activites sur le terrain
+            Découvrez les moments forts de nos activités sur le terrain
           </p>
         </FadeInView>
 
-        {/* Filtres par categorie */}
+        {/* Filtres par catégorie */}
         <FadeInView className="flex flex-wrap justify-center gap-3 mb-12">
           {categories.map((category) => (
             <button
@@ -79,7 +99,7 @@ export default function Gallery() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             <p className="text-[#666666] text-lg">Aucune photo pour le moment</p>
-            <p className="text-[#999999] text-sm mt-2">Les photos de nos activites seront bientot disponibles</p>
+            <p className="text-[#999999] text-sm mt-2">Les photos de nos activités seront bientôt disponibles</p>
           </div>
         ) : (
           <motion.div
@@ -126,7 +146,7 @@ export default function Gallery() {
                     )}
                   </div>
 
-                  {/* Icone loupe */}
+                  {/* Icône loupe */}
                   <div className="absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-100 scale-75">
                     <svg className="w-4 h-4 text-[#002060]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -152,7 +172,7 @@ export default function Gallery() {
         </FadeInView>
       </div>
 
-      {/* Lightbox */}
+      {/* Lightbox d'affichage grand format */}
       <ImageModal
         isOpen={isLightboxOpen}
         onClose={closeLightbox}
@@ -164,3 +184,5 @@ export default function Gallery() {
     </section>
   );
 }
+
+
