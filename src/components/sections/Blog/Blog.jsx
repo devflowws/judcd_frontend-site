@@ -1,45 +1,54 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { getActualites } from '../../../services/blogService';
 
 // ==========================================
 // SECTION ACTUALITÉS JUDCD
 // ==========================================
 
-// Données temporaires (à remplacer par l'API)
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Lancement de notre nouvelle campagne de sensibilisation',
-    excerpt: 'Découvrez notre nouvelle campagne pour promouvoir le développement durable dans les communautés locales.',
-    date: '2024-03-15',
-    category: 'Sensibilisation',
-    image: '/assets/images/blog-1.jpg',
-    readTime: '3 min',
-  },
-  {
-    id: 2,
-    title: 'Formation en entrepreneuriat : Session mars 2024',
-    excerpt: 'Retour sur notre dernière formation qui a rassemblé plus de 20 jeunes entrepreneurs en herbe.',
-    date: '2024-03-10',
-    category: 'Formation',
-    image: '/assets/images/blog-2.jpg',
-    readTime: '5 min',
-  },
-  {
-    id: 3,
-    title: 'Partenariat avec les écoles locales',
-    excerpt: 'JUDCD signe des partenariats stratégiques avec plusieurs établissements scolaires pour l\'éducation citoyenne.',
-    date: '2024-03-05',
-    category: 'Partenariat',
-    image: '/assets/images/blog-3.jpg',
-    readTime: '4 min',
-  },
-];
-
 export default function Blog() {
   const { t } = useLanguage();
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchActualites = async () => {
+      try {
+        const response = await getActualites();
+        console.log("ACTUALITES..: ", response);
+        const rawdata = response && response.data ? response.data : [];
+
+        const mappedData = rawdata.map(actualite => ({
+          id: actualite.id,
+          title: actualite.titre || "Sans titre", // Harmonisation avec le JSX plus bas
+          excerpt: actualite.description ? actualite.description.substring(0, 120) + '...' : "", 
+          date: actualite.date || "",
+          image: actualite.image_couverture || "",
+          category: actualite.categorie || "Actualité", // Valeur par défaut si absent de l'API
+          readTime: actualite.temps_lecture || "3 min" // Valeur par défaut si absent de l'API
+        }));
+
+        if (isMounted) {
+          setBlogs(mappedData);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des actualités :", error);
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchActualites();
+    return () => { isMounted = false; };
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-20 text-[#002060] font-semibold">Chargement des actualités...</div>;
+  }
 
   return (
     <section className="py-20 md:py-28 bg-[#F8FAF9] relative overflow-hidden">
@@ -65,8 +74,8 @@ export default function Blog() {
 
         {/* Grille d'articles */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post, index) => (
-            <FadeInView key={post.id} delay={index * 0.1}>
+          {blogs.map((actualite, index) => (
+            <FadeInView key={actualite.id || index} delay={index * 0.1}>
               <motion.article
                 whileHover={{ y: -5 }}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
@@ -74,14 +83,18 @@ export default function Blog() {
                 {/* Image */}
                 <div className="relative h-48 bg-gradient-to-br from-[#008751] to-[#002060]">
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-white/20 text-6xl font-bold">
-                      {post.category.charAt(0)}
-                    </span>
+                    {actualite.image ? (
+                      <img src={actualite.image} alt={actualite.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-white/20 text-6xl font-bold">
+                        {actualite.category?.charAt(0)}
+                      </span>
+                    )}
                   </div>
                   {/* Catégorie */}
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-[#008751] text-white text-xs font-semibold rounded-full">
-                      {post.category}
+                      {actualite.category}
                     </span>
                   </div>
                 </div>
@@ -90,19 +103,19 @@ export default function Blog() {
                 <div className="p-6">
                   {/* Date et temps de lecture */}
                   <div className="flex items-center gap-4 text-sm text-[#666666] mb-3">
-                    <time>{post.date}</time>
+                    <time>{actualite.date}</time>
                     <span>•</span>
-                    <span>{post.readTime}</span>
+                    <span>{actualite.readTime}</span>
                   </div>
 
                   {/* Titre */}
                   <h3 className="font-heading font-bold text-xl text-[#002060] mb-3 leading-tight">
-                    {post.title}
+                    {actualite.title}
                   </h3>
 
                   {/* Extrait */}
                   <p className="text-[#666666] mb-4 line-clamp-3">
-                    {post.excerpt}
+                    {actualite.excerpt}
                   </p>
 
                   {/* Bouton */}

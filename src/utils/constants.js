@@ -286,6 +286,7 @@ export const API = {
     temoignages: '/temoignage/',
     typeAction: '/type-action/',
     typeActualite: '/type-actualite/',
+    actualite: '/actualite/',
     typePartenaire: '/type-partenaire/',
   },
 };

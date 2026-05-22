@@ -1,7 +1,8 @@
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { PARTNERS } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { getPartenaires } from '../../../services/partenairesService';
 
 // ==========================================
 // SECTION PARTENAIRES JUDCD
@@ -9,8 +10,45 @@ import FadeInView from '@components/ui/Animations/FadeInView';
 
 export default function Partners() {
   const { t } = useLanguage();
+  const [partnersList, setPartnersList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const partnersList = PARTNERS;
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchBackendPartners = async () => {
+      try {
+        const response = await getPartenaires();
+        console.log("response: ", response);
+        // Extraction du tableau depuis l'enveloppe { success: true, data: [...] }
+        const rawdata = response && response.data ? response.data : [];
+
+        const mappedData = rawdata.map(partner => ({
+          id: partner.id,
+          name: partner.nom,
+          logo: partner.logo,
+          link: partner.lien,
+          // Récupération sécurisée de la catégorie (gère l'ID brut ou l'objet type_partenaire)
+          // category: partner.type_partenaire
+          category: partner.type_partenaire_details?.nom || "Partenaire"
+        }));
+
+        if (isMounted) {
+          setPartnersList(mappedData);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des partenaires :", error);
+        if (isMounted) {
+          setPartnersList([]);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchBackendPartners();
+    return () => { isMounted = false; };
+  }, []);
 
   return (
     <section id="partners" className="py-20 md:py-28 bg-[#F8FAF9] relative overflow-hidden">
@@ -30,10 +68,20 @@ export default function Partners() {
           </p>
         </FadeInView>
 
-        {/* Carrousel infini */}
-        <FadeInView>
-          <InfiniteCarousel partners={partnersList} />
-        </FadeInView>
+        {/* Rendu conditionnel : Évite les calculs sur un tableau vide pendant le chargement */}
+        {loading ? (
+          <div className="text-center py-8 text-[#002060] font-semibold">
+            Chargement des partenaires...
+          </div>
+        ) : partnersList.length > 0 ? (
+          <FadeInView>
+            <InfiniteCarousel partners={partnersList} />
+          </FadeInView>
+        ) : (
+          <div className="text-center py-8 text-gray-500 text-sm italic">
+            Aucun partenaire affiché pour le moment.
+          </div>
+        )}
 
         {/* Appel à devenir partenaire */}
         <FadeInView className="text-center mt-16">
@@ -62,13 +110,11 @@ export default function Partners() {
 }
 
 // ==========================================
-// CARROUSEL INFINI FLUIDE - Défilement sans calage
+// CARROUSEL INFINI FLUIDE
 // ==========================================
 
 function InfiniteCarousel({ partners }) {
-  // Utiliser directement les partenaires avec leurs vraies données
-  const partnersData = partners;
-  const duplicated = [...partnersData, ...partnersData, ...partnersData];
+  const duplicated = [...partners, ...partners, ...partners];
 
   const logoSize = 'w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24';
   const itemWidth = 'w-[130px] sm:w-[150px] md:w-[170px] lg:w-[190px]';
@@ -124,7 +170,7 @@ function InfiniteCarousel({ partners }) {
           100% { transform: translateX(-33.333%); }
         }
         .animate-scroll {
-          animation: scroll ${partnersData.length * 3}s linear infinite;
+          animation: scroll ${partners.length * 4}s linear infinite;
           width: fit-content;
         }
         .animate-scroll:hover {
