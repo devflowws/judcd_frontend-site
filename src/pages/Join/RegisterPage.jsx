@@ -45,9 +45,14 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const submitData = new FormData();
-      Object.keys(formData).forEach(key => { if (formData[key]) submitData.append(key, formData[key]); });
+      // Object.keys(formData).forEach(key => { if (formData[key]) submitData.append(key, formData[key]); });
+      // Remplace ton Object.keys(...).forEach par ceci :
+      // Object.keys(formData).forEach(key => {
+      //   // On envoie la valeur, ou une chaîne vide si elle n'est pas saisie
+      //   submitData.append(key, formData[key] !== undefined && formData[key] !== null ? formData[key] : '');
+      // });
       submitData.append('capture_depot', captureDepot);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+      const apiUrl = 'http://localhost:8000/api/v1';
       const response = await fetch(`${apiUrl}/adhesion/creer/`, { method: 'POST', body: submitData });
       const result = await response.json();
       if (result.success || response.ok) {

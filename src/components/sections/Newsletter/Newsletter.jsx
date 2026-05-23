@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { validateEmail } from '@utils/validators';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { createNewsletter } from '../../../services/newsletterService';
 
 // ==========================================
 // SECTION NEWSLETTER JUDCD
@@ -28,15 +29,18 @@ export default function Newsletter() {
 
     setStatus('loading');
 
-    // Simulation d'inscription (à remplacer par l'appel API)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const submit = await createNewsletter({ email: email });
+      
       setStatus('success');
       setMessage('Inscription réussie ! Merci de votre intérêt pour nos activités.');
       setEmail('');
     } catch (error) {
       setStatus('error');
-      setMessage('Une erreur est survenue. Veuillez réessayer.');
+      
+      // OPTIMISATION : Récupérer le vrai message d'erreur de l'API si disponible
+      const serverMessage = error.response?.data?.detail || 'Une erreur est survenue. Veuillez réessayer.';
+      setMessage(serverMessage);
     }
   };
 
@@ -100,7 +104,7 @@ export default function Newsletter() {
                         placeholder={t('footer.newsletter.placeholder')}
                         className={`w-full px-5 py-4 pr-12 rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${
                           status === 'error'
-                            ? 'ring-2 ring-red-400 bg-red-50'
+                            ? 'ring-2 ring-red-500 bg-red-500/10 text-white placeholder-white/50 focus:ring-red-500'
                             : 'bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-[#FFD100] focus:ring-[#FFD100]/30'
                         }`}
                         disabled={status === 'loading'}

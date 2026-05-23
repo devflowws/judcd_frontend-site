@@ -19,7 +19,7 @@ export default function Partners() {
     const fetchBackendPartners = async () => {
       try {
         const response = await getPartenaires();
-        console.log("response: ", response);
+        // console.log("response: ", response);
         // Extraction du tableau depuis l'enveloppe { success: true, data: [...] }
         const rawdata = response && response.data ? response.data : [];
 
