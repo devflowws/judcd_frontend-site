@@ -1,64 +1,84 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // <-- 1. Import de useEffect ajouté
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
+import { getTemoignages } from '../../../services/temoignageService';
 
 // ==========================================
 // SECTION TEMOIGNAGES JUDCD
 // ==========================================
 
-// Données temporaires (à remplacer par l'API)
-const testimonials = [
-  {
-    id: 1,
-    name: 'Komi A.',
-    role: 'Jeune entrepreneur',
-    content: 'Grâce aux formations de JUDCD, j\'ai pu développer mes compétences en entrepreneuriat et lancer mon activité. L\'accompagnement reçu a été déterminant pour mon parcours.',
-    rating: 5,
-    avatar: null,
-  },
-  {
-    id: 2,
-    name: 'Afi M.',
-    role: 'Étudiante',
-    content: 'Les campagnes de sensibilisation m\'ont ouvert les yeux sur l\'importance du développement durable. Aujourd\'hui, je m\'engage activement dans ma communauté.',
-    rating: 5,
-    avatar: null,
-  },
-  {
-    id: 3,
-    name: 'Koffi D.',
-    role: 'Membre de la communauté',
-    content: 'Le projet de développement local a transformé notre quartier. JUDCD a su mobiliser les jeunes et les ressources pour un impact concret et durable.',
-    rating: 5,
-    avatar: null,
-  },
-];
-
 export default function Testimonials() {
   const { t } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
+  // 2. Initialisation avec un tableau vide [] pour éviter le crash au démarrage
+  const [testimonials, setTestimonials] = useState([]); 
+  const [loading, setLoading] = useState(true); // Optionnel : pour gérer l'état de chargement
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchBackendTestimonials = async () => {
+      try {
+        const response = await getTemoignages();
+        const rawdata = response && response.data ? response.data : [];
+
+        const mappedData = rawdata.map(testimonial => ({
+          "name": testimonial.nom || 'Anonyme',
+          "role": testimonial.titre || '',
+          "content": testimonial.message || '',
+          "avatar": testimonial.photo,
+          "rating": testimonial.note || 5
+        }));
+
+        if (isMounted) {
+          setTestimonials(mappedData);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des témoignages :", error);
+        if (isMounted) {
+          setLoading(false); // Nettoyage des anciennes fonctions partenaires ici
+        }
+      }
+    };
+
+    fetchBackendTestimonials(); // 3. Appel de la BONNE fonction ici !
+    return () => { isMounted = false; };
+  }, []);
 
   const next = () => {
+    if (testimonials.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const previous = () => {
+    if (testimonials.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
+  // Sécurité anti-crash : on ne lit l'index que s'il y a des données
   const currentTestimonial = testimonials[currentIndex];
+
+  // Si l'API charge ou s'il n'y a aucun témoignage à afficher
+  if (loading || testimonials.length === 0) {
+    return (
+      <section className="py-20 bg-white text-center text-gray-500">
+        Chargement des témoignages...
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 md:py-28 bg-white relative overflow-hidden">
-      {/* Fond decoratif */}
+      {/* Fond décoratif */}
       <div className="absolute inset-0">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#008751]/3 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
-        {/* En-tete */}
+        {/* En-tête */}
         <FadeInView className="text-center mb-16">
           <span className="text-sm font-semibold text-[#008751] uppercase tracking-wider mb-3 block">
             {t('section.testimonials')}
@@ -71,7 +91,7 @@ export default function Testimonials() {
           </p>
         </FadeInView>
 
-        {/* Carrousel de temoignages */}
+        {/* Carrousel de témoignages */}
         <div className="relative">
           {/* Grands guillemets */}
           <svg className="absolute -top-8 -left-4 w-24 h-24 text-[#008751]/10" fill="currentColor" viewBox="0 0 24 24">
@@ -87,7 +107,7 @@ export default function Testimonials() {
               transition={{ duration: 0.4 }}
               className="text-center px-8 md:px-16"
             >
-              {/* Etoiles */}
+              {/* Étoiles */}
               <div className="flex justify-center gap-1 mb-6">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg
@@ -109,7 +129,7 @@ export default function Testimonials() {
               {/* Auteur */}
               <div className="flex items-center justify-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#008751] to-[#002060] flex items-center justify-center text-white font-bold text-xl">
-                  {currentTestimonial.name.charAt(0)}
+                  {currentTestimonial.name ? currentTestimonial.name.charAt(0) : '?'}
                 </div>
                 <div className="text-left">
                   <p className="font-heading font-bold text-[#002060] text-lg">
@@ -129,7 +149,7 @@ export default function Testimonials() {
               <button
                 onClick={previous}
                 className="w-12 h-12 rounded-full border-2 border-[#008751] text-[#008751] hover:bg-[#008751] hover:text-white flex items-center justify-center transition-all group"
-                aria-label="Temoignage precedent"
+                aria-label="Témoignage précédent"
               >
                 <svg className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -147,7 +167,7 @@ export default function Testimonials() {
                         ? 'w-8 h-3 bg-[#008751]'
                         : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
                     }`}
-                    aria-label={`Temoignage ${index + 1}`}
+                    aria-label={`Témoignage ${index + 1}`}
                   />
                 ))}
               </div>
@@ -155,7 +175,7 @@ export default function Testimonials() {
               <button
                 onClick={next}
                 className="w-12 h-12 rounded-full border-2 border-[#008751] text-[#008751] hover:bg-[#008751] hover:text-white flex items-center justify-center transition-all group"
-                aria-label="Temoignage suivant"
+                aria-label="Témoignage suivant"
               >
                 <svg className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

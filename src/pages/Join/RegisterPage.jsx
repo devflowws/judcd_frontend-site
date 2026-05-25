@@ -21,7 +21,12 @@ export default function RegisterPage() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const handleInputChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    // setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value, // Assure-toi que l'attribut "name" de ton input HTML correspond exactement (ex: name="nom")
+    });
   };
 
   const handleFileChange = (e) => {
@@ -45,13 +50,26 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const submitData = new FormData();
-      // Object.keys(formData).forEach(key => { if (formData[key]) submitData.append(key, formData[key]); });
-      // Remplace ton Object.keys(...).forEach par ceci :
-      // Object.keys(formData).forEach(key => {
-      //   // On envoie la valeur, ou une chaîne vide si elle n'est pas saisie
-      //   submitData.append(key, formData[key] !== undefined && formData[key] !== null ? formData[key] : '');
-      // });
-      submitData.append('capture_depot', captureDepot);
+      submitData.append('nom', formData.nom || '');
+      submitData.append('prenom', formData.prenom || '');
+      submitData.append('email', formData.email || '');
+      submitData.append('telephone', formData.telephone || '');
+      submitData.append('date_naissance', formData.date_naissance || '');
+      submitData.append('lieu_naissance', formData.lieu_naissance || '');
+      submitData.append('adresse', formData.adresse || '');
+      submitData.append('profession', formData.profession || '');
+      submitData.append('motivations', formData.motivations || '');
+      submitData.append('reference_paiement', formData.reference_paiement || '');
+      submitData.append('competences', formData.competences || '');
+      submitData.append('disponibilites', formData.disponibilites || '');
+
+      // 2. On ajoute le fichier (seulement s'il a été sélectionné)
+      if (captureDepot) {
+        submitData.append('capture_depot', captureDepot);
+      }
+
+
+      // submitData.append('capture_depot', captureDepot);
       const apiUrl = 'http://localhost:8000/api/v1';
       const response = await fetch(`${apiUrl}/adhesion/creer/`, { method: 'POST', body: submitData });
       const result = await response.json();
@@ -66,6 +84,42 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const submitData = new FormData();
+
+  //   // 1. On ajoute manuellement les champs texte pour être SÛR qu'ils y sont
+  //   submitData.append('nom', formData.nom || '');
+  //   submitData.append('prenom', formData.prenom || '');
+  //   submitData.append('email', formData.email || '');
+  //   submitData.append('telephone', formData.telephone || '');
+  //   submitData.append('date_naissance', formData.date_naissance || '');
+  //   submitData.append('lieu_naissance', formData.lieu_naissance || '');
+  //   submitData.append('adresse', formData.adresse || '');
+  //   submitData.append('profession', formData.profession || '');
+  //   submitData.append('motivations', formData.motivations || '');
+  //   submitData.append('reference_paiement', formData.reference_paiement || '');
+
+  //   // 2. On ajoute le fichier (seulement s'il a été sélectionné)
+  //   if (formData.capture_depot) {
+  //     submitData.append('capture_depot', formData.capture_depot);
+  //   }
+
+  //   try {
+  //     const response = await axios.post('http://127.0.0.1:8000/.../creer/', submitData, {
+  //       headers: {
+  //         // Très important pour que le serveur comprenne qu'il y a un fichier
+  //         'Content-Type': 'multipart/form-data', 
+  //       },
+  //     });
+  //     console.log('Succès !', response.data);
+  //   } catch (error) {
+  //     console.error('Erreur lors de l\'envoi', error.response?.data);
+  //   }
+  // };
+
 
   const nextStep = () => {
     if (step === 1 && (!formData.nom || !formData.prenom || !formData.email || !formData.telephone)) {

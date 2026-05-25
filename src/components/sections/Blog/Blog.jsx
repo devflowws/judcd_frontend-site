@@ -19,7 +19,7 @@ export default function Blog() {
     const fetchActualites = async () => {
       try {
         const response = await getActualites();
-        console.log("ACTUALITES..: ", response);
+        // console.log("ACTUALITES..: ", response);
         const rawdata = response && response.data ? response.data : [];
 
         const mappedData = rawdata.map(actualite => ({
@@ -28,14 +28,16 @@ export default function Blog() {
           excerpt: actualite.description ? actualite.description.substring(0, 120) + '...' : "", 
           date: actualite.date || "",
           image: actualite.image_couverture || "",
-          category: actualite.categorie || "Actualité", // Valeur par défaut si absent de l'API
-          readTime: actualite.temps_lecture || "3 min" // Valeur par défaut si absent de l'API
+          category: actualite.type_actualite_details.nom || "Actualité", 
+          readTime: actualite.temps_lecture || "3 min" 
         }));
 
         if (isMounted) {
           setBlogs(mappedData);
           setLoading(false);
         }
+
+        // console.log("Actualité::: ", blogs);ACTUALITES..
       } catch (error) {
         console.error("Erreur lors de la récupération des actualités :", error);
         if (isMounted) setLoading(false);
