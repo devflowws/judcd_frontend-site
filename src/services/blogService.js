@@ -27,7 +27,15 @@ export async function getActualites(params = {}) {
   return await get(API.endpoints.actualite, { params });
 }
 
+// export async function getActualites(params = {}) {
+//   // On passe les params directement pour que get de axios/fetch les mette en Query String (?page=1&search=...)
+//   return await get(API.endpoints.actualite, params);
+// }
 
+// Ajoute aussi cette fonction pour récupérer les filtres dans la barre latérale ou les onglets
+export async function getTypeActualites() {
+  return await get(API.endpoints.typeActualite); // Assure-toi d'avoir cet endpoint dans tes constantes
+}
 /**
  * Recupere un article par son slug
  */

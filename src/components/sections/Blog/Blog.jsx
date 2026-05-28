@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom'; // <-- AJOUT : Import indispensable pour la navigation
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
 import { getActualites } from '../../../services/blogService';
-
-// ==========================================
-// SECTION ACTUALITÉS JUDCD
-// ==========================================
 
 export default function Blog() {
   const { t } = useLanguage();
@@ -19,17 +16,16 @@ export default function Blog() {
     const fetchActualites = async () => {
       try {
         const response = await getActualites();
-        console.log("ACTUALITES..: ", response);
         const rawdata = response && response.data ? response.data : [];
 
         const mappedData = rawdata.map(actualite => ({
           id: actualite.id,
-          title: actualite.titre || "Sans titre", // Harmonisation avec le JSX plus bas
+          title: actualite.titre || "Sans titre",
           excerpt: actualite.description ? actualite.description.substring(0, 120) + '...' : "", 
-          date: actualite.date || "",
+          date: actualite.date ? new Date(actualite.date).toLocaleDateString() : "",
           image: actualite.image_couverture || "",
-          category: actualite.categorie || "Actualité", // Valeur par défaut si absent de l'API
-          readTime: actualite.temps_lecture || "3 min" // Valeur par défaut si absent de l'API
+          category: actualite.type_actualite_details?.nom || "Actualité",
+          readTime: actualite.temps_lecture || "3 min" 
         }));
 
         if (isMounted) {
@@ -52,14 +48,12 @@ export default function Blog() {
 
   return (
     <section className="py-20 md:py-28 bg-[#F8FAF9] relative overflow-hidden">
-      {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 right-20 w-40 h-40 bg-[#008751] rounded-full" />
         <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#FFD100] rounded-full" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* En-tête */}
         <FadeInView className="text-center mb-16">
           <span className="text-sm font-semibold text-[#008751] uppercase tracking-wider mb-3 block">
             {t('section.blog')}
@@ -72,7 +66,6 @@ export default function Blog() {
           </p>
         </FadeInView>
 
-        {/* Grille d'articles */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map((actualite, index) => (
             <FadeInView key={actualite.id || index} delay={index * 0.1}>
@@ -80,7 +73,6 @@ export default function Blog() {
                 whileHover={{ y: -5 }}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
               >
-                {/* Image */}
                 <div className="relative h-48 bg-gradient-to-br from-[#008751] to-[#002060]">
                   <div className="absolute inset-0 flex items-center justify-center">
                     {actualite.image ? (
@@ -91,7 +83,6 @@ export default function Blog() {
                       </span>
                     )}
                   </div>
-                  {/* Catégorie */}
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-[#008751] text-white text-xs font-semibold rounded-full">
                       {actualite.category}
@@ -99,54 +90,48 @@ export default function Blog() {
                   </div>
                 </div>
 
-                {/* Contenu */}
                 <div className="p-6">
-                  {/* Date et temps de lecture */}
                   <div className="flex items-center gap-4 text-sm text-[#666666] mb-3">
                     <time>{actualite.date}</time>
                     <span>•</span>
                     <span>{actualite.readTime}</span>
                   </div>
 
-                  {/* Titre */}
                   <h3 className="font-heading font-bold text-xl text-[#002060] mb-3 leading-tight">
                     {actualite.title}
                   </h3>
 
-                  {/* Extrait */}
                   <p className="text-[#666666] mb-4 line-clamp-3">
                     {actualite.excerpt}
                   </p>
 
-                  {/* Bouton */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  {/* Redirection vers le détail de l'article spécifique */}
+                  <Link 
+                    to={`/blogs/${actualite.id}`}
                     className="inline-flex items-center gap-2 text-[#008751] font-semibold hover:text-[#006B41] transition-colors"
                   >
                     Lire la suite
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
-                  </motion.button>
+                  </Link>
                 </div>
               </motion.article>
             </FadeInView>
           ))}
         </div>
 
-        {/* Bouton voir tout */}
+        {/* Bouton voir tout unifié avec les bons styles du bouton vert */}
         <FadeInView className="text-center mt-12">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#008751] text-white font-bold rounded-xl hover:bg-[#006B41] transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-green-500/40"
+          <Link
+            to="/blogs"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#008751] text-white font-bold rounded-xl hover:bg-[#006B41] transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-green-500/40 group"
           >
             Voir toutes les actualités
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </motion.button>
+          </Link>
         </FadeInView>
       </div>
     </section>

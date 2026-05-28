@@ -96,35 +96,26 @@ export function validateURL(url) {
 /**
  * Valide un formulaire de contact complet
  */
+// @utils/validators.js
 export function validateContactForm(data) {
   const errors = {};
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const nameValidation = validateRequired(data.name, 'Le nom');
-  if (!nameValidation.valid) errors.name = nameValidation.message;
-
-  const nameLengthValidation = validateMinLength(data.name, 2, 'Le nom');
-  if (nameLengthValidation.message && !errors.name) errors.name = nameLengthValidation.message;
-
-  const emailValidation = validateEmail(data.email);
-  if (!emailValidation.valid) errors.email = emailValidation.message;
-
-  const phoneValidation = validatePhone(data.phone);
-  if (!phoneValidation.valid) errors.phone = phoneValidation.message;
-
-  const subjectValidation = validateRequired(data.subject, 'Le sujet');
-  if (!subjectValidation.valid) errors.subject = subjectValidation.message;
-
-  const messageValidation = validateRequired(data.message, 'Le message');
-  if (!messageValidation.valid) errors.message = messageValidation.message;
-
-  const messageMinValidation = validateMinLength(data.message, 10, 'Le message');
-  if (messageMinValidation.message && !errors.message) errors.message = messageMinValidation.message;
+  if (!data.name.trim()) errors.name = 'Le nom est requis.';
+  if (!data.email.trim()) {
+    errors.email = 'L\'adresse email est requise.';
+  } else if (!emailRegex.test(data.email)) {
+    errors.email = 'Adresse email invalide.';
+  }
+  if (!data.message.trim()) errors.message = 'Le message ne peut pas être vide.';
+  if (!data.subject) errors.subject = 'Veuillez choisir un sujet.';
 
   return {
     valid: Object.keys(errors).length === 0,
-    errors,
+    errors
   };
 }
+
 
 /**
  * Valide un formulaire d'adhesion

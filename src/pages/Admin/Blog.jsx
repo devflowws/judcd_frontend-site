@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import AdminLayout from '@components/admin/AdminLayout';
 
 export default function AdminBlog() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   return (
     <AdminLayout title="Blog">

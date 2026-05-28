@@ -144,7 +144,7 @@ export function useContactAdmin() {
       setError('Erreur de chargement des messages.');
       return { success: false };
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); 
     }
   }, []);
 
