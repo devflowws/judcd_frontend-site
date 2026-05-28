@@ -16,10 +16,12 @@ export default function Adhesions() {
   const [actionLoading, setActionLoading] = useState(false);
   const [filter, setFilter] = useState('TOUT');
   const [searchTerm, setSearchTerm] = useState('');
+  const [adminComment, setAdminComment] = useState('');
 
   useEffect(() => {
     loadData();
   }, []);
+
 
   const loadData = async () => {
     try {
@@ -27,12 +29,12 @@ export default function Adhesions() {
       
       // Charger les adhésions et les statistiques
       const [adhesionsRes, statsRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/admin/adhesions/`, {
+        fetch(`${'http://localhost:8000/api/v1'}/admin/adhesions/`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('judcd_access_token')}`
           }
         }),
-        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/admin/adhesions/statistiques/`, {
+        fetch(`${'http://localhost:8000/api/v1'}/admin/adhesions/statistiques/`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('judcd_access_token')}`
           }
@@ -40,7 +42,9 @@ export default function Adhesions() {
       ]);
 
       const adhesionsData = await adhesionsRes.json();
+      // console.log("Adhesions data:", adhesionsData);
       const statsData = await statsRes.json();
+      // setAdminComment('');
 
       if (adhesionsData.success) {
         setAdhesions(adhesionsData.data || []);
@@ -58,11 +62,14 @@ export default function Adhesions() {
     }
   };
 
+
+  // 1. Mise à jour de handleAction pour vider le commentaire après réussite
+
   const handleAction = async (adhesion, action, commentaires = '') => {
     setActionLoading(true);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/admin/adhesions/${adhesion.id}/action/`, {
+      const response = await fetch(`${'http://localhost:8000/api/v1'}/admin/adhesions/${adhesion.id}/action/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,12 +81,11 @@ export default function Adhesions() {
       const result = await response.json();
 
       if (result.success) {
-        // Mettre à jour les données
         loadData();
         setShowActionModal(false);
         setSelectedAdhesion(null);
+        setAdminComment(''); // 👈 Ajoutez ceci pour vider le champ texte pour la prochaine fois
         
-        // Afficher un message de succès
         alert(`Action "${action}" effectuée avec succès`);
       } else {
         setError(result.error?.detail || 'Erreur lors de l\'action');
@@ -89,6 +95,13 @@ export default function Adhesions() {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  // 2. Fonction pour fermer proprement les modals et vider les états temporaires
+  const closeActionModal = () => {
+    setShowActionModal(false);
+    setSelectedAdhesion(null);
+    setAdminComment(''); // ✨ Nettoyage si on clique sur "Annuler"
   };
 
   const filteredAdhesions = adhesions.filter(adhesion => {
@@ -466,7 +479,14 @@ export default function Adhesions() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Commentaires (optionnel)
                 </label>
+                {/* <textarea
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008751] focus:border-transparent"
+                  rows="3"
+                  placeholder="Ajoutez des commentaires..."
+                /> */}
                 <textarea
+                  value={adminComment}
+                  onChange={(e) => setAdminComment(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008751] focus:border-transparent"
                   rows="3"
                   placeholder="Ajoutez des commentaires..."
@@ -481,7 +501,7 @@ export default function Adhesions() {
                   Annuler
                 </button>
                 <button
-                  onClick={() => handleAction(selectedAdhesion, 'APPROUVER')}
+                  onClick={() => handleAction(selectedAdhesion, 'APPROUVER', adminComment)}
                   disabled={actionLoading}
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
                 >
