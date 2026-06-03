@@ -30,17 +30,21 @@ export default function Newsletter() {
     setStatus('loading');
 
     try {
-      const submit = await createNewsletter({ email: email });
-      
-      setStatus('success');
-      setMessage('Inscription réussie ! Merci de votre intérêt pour nos activités.');
-      setEmail('');
+      const result = await createNewsletter({ email });
+
+      if (result.success) {
+        setStatus('success');
+        setMessage(t('newsletter.success'));
+        setEmail('');
+      } else {
+        setStatus('error');
+        const errMsg = result.error?.error || result.error?.detail || result.error || t('newsletter.error');
+        const isDuplicate = typeof errMsg === 'string' && errMsg.toLowerCase().includes('déjà');
+        setMessage(isDuplicate ? t('newsletter.exists') : t('newsletter.error'));
+      }
     } catch (error) {
       setStatus('error');
-      
-      // OPTIMISATION : Récupérer le vrai message d'erreur de l'API si disponible
-      const serverMessage = error.response?.data?.detail || 'Une erreur est survenue. Veuillez réessayer.';
-      setMessage(serverMessage);
+      setMessage(t('newsletter.error'));
     }
   };
 
@@ -68,12 +72,12 @@ export default function Newsletter() {
 
               {/* Titre */}
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-white mb-4">
-                {t('section.newsletter')}
+                {t('newsletter.title')}
               </h2>
-              
+
               {/* Description */}
               <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
-                Recevez nos actualités, événements et rapports d'activité directement dans votre boîte mail.
+                {t('newsletter.description')}
               </p>
 
               {/* Formulaire */}
@@ -124,10 +128,10 @@ export default function Newsletter() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                           </svg>
-                          Envoi...
+                          {t('newsletter.sending')}
                         </>
                       ) : (
-                        t('footer.newsletter.subscribe')
+                        t('newsletter.subscribe')
                       )}
                     </button>
                   </div>

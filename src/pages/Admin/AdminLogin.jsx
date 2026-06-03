@@ -40,17 +40,22 @@ export default function AdminLogin() {
     if (result.success) {
       navigate('/admin/dashboard');
     } else {
-      // Messages d'erreur plus professionnels et spécifiques
-      if (result.error?.includes('404') || result.error?.includes('not found')) {
-        setError('Service de connexion temporairement indisponible. Veuillez réessayer ultérieurement.');
-      } else if (result.error?.includes('401') || result.error?.includes('Unauthorized')) {
-        setError('Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.');
-      } else if (result.error?.includes('403') || result.error?.includes('Forbidden')) {
-        setError('Accès refusé. Vous n\'avez pas les droits d\'accès à cette interface.');
-      } else if (result.error?.includes('network') || result.error?.includes('fetch')) {
-        setError('Erreur de connexion au serveur. Veuillez vérifier votre connexion internet.');
+      // Normaliser l'erreur (peut être objet ou string)
+      const err = result.error;
+      const errStr = typeof err === 'string'
+        ? err
+        : err?.detail || err?.error || err?.non_field_errors?.[0] || JSON.stringify(err) || '';
+
+      if (errStr.includes('404') || errStr.includes('not found')) {
+        setError('Service de connexion temporairement indisponible. Veuillez réessayer.');
+      } else if (errStr.includes('Invalid credentials') || errStr.includes('401') || errStr.includes('incorrect')) {
+        setError('Email ou mot de passe incorrect. Vérifiez vos identifiants.');
+      } else if (errStr.includes('403') || errStr.includes('Forbidden')) {
+        setError('Accès refusé. Vous n\'avez pas les droits d\'accès.');
+      } else if (errStr.includes('Network') || errStr.includes('network') || errStr.includes('fetch') || !errStr) {
+        setError('Impossible de joindre le serveur. Vérifiez que le backend est démarré.');
       } else {
-        setError(result.error || 'Une erreur est survenue lors de la connexion. Veuillez réessayer.');
+        setError('Email ou mot de passe incorrect. Vérifiez vos identifiants.');
       }
     }
   };

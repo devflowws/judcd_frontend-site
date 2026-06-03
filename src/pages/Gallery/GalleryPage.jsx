@@ -88,7 +88,7 @@ export default function GalleryPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              Galerie photo
+              {t('section.gallery')}
             </motion.h1>
             <motion.p
               className="text-white/80 text-lg max-w-3xl mx-auto"
@@ -96,7 +96,7 @@ export default function GalleryPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Découvrez les moments forts de nos actions sur le terrain
+              {t('gallerypage.desc')}
             </motion.p>
           </div>
         </section>
@@ -115,7 +115,7 @@ export default function GalleryPage() {
                       : 'bg-gray-100 text-[#666666] hover:bg-gray-200 hover:text-[#333333]'
                   }`}
                 >
-                  {category === 'all' ? 'Toutes les photos' : category}
+                  {category === 'all' ? t('gallery.all') : category}
                 </button>
               ))}
             </div>
@@ -134,8 +134,8 @@ export default function GalleryPage() {
                 <svg className="w-20 h-20 mx-auto mb-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <h3 className="font-heading font-bold text-xl text-[#333333] mb-2">Aucune photo pour le moment</h3>
-                <p className="text-[#666666]">Les photos de nos activités seront bientôt disponibles.</p>
+                <h3 className="font-heading font-bold text-xl text-[#333333] mb-2">{t('gallerypage.empty.h')}</h3>
+                <p className="text-[#666666]">{t('gallerypage.empty.text')}</p>
               </div>
             ) : (
               <>
@@ -152,7 +152,16 @@ export default function GalleryPage() {
                         className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl bg-white"
                         onClick={() => openLightbox(photo)}
                       >
-                        {photo.image ? (
+                        {photo.video ? (
+                          <>
+                            <video src={photo.video} className="w-full h-full object-cover" muted preload="metadata" />
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <div className="w-14 h-14 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                              </div>
+                            </div>
+                          </>
+                        ) : photo.image ? (
                           <img
                             src={photo.image}
                             alt={photo.title || 'Photo JUDCD'}
@@ -198,7 +207,7 @@ export default function GalleryPage() {
                     </button>
                     
                     <span className="text-[#666666] font-medium">
-                      Page {page} sur {totalPages}
+                      {t('gallerypage.page')} {page} {t('gallerypage.of')} {totalPages}
                     </span>
                     
                     <button
@@ -223,6 +232,7 @@ export default function GalleryPage() {
         isOpen={isLightboxOpen}
         onClose={closeLightbox}
         image={selectedImage?.image}
+        video={selectedImage?.video}
         alt={selectedImage?.title}
         title={selectedImage?.title}
         description={selectedImage?.description || selectedImage?.category}

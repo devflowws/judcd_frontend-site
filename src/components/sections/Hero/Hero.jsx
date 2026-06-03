@@ -99,17 +99,17 @@ export default function Hero() {
             >
               <div className="text-center">
                 <p className="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-[#FFD100]">10+</p>
-                <p className="text-white/60 text-[10px] sm:text-xs md:text-sm mt-1 whitespace-nowrap">Bénéficiaires directs</p>
+                <p className="text-white/60 text-[10px] sm:text-xs md:text-sm mt-1 whitespace-nowrap">{t('hero.stats.beneficiaries')}</p>
               </div>
               <div className="w-px h-8 sm:h-10 bg-white/20 hidden sm:block" />
               <div className="text-center">
                 <p className="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-[#FFD100]">2</p>
-                <p className="text-white/60 text-[10px] sm:text-xs md:text-sm mt-1 whitespace-nowrap">Activités communautaires</p>
+                <p className="text-white/60 text-[10px] sm:text-xs md:text-sm mt-1 whitespace-nowrap">{t('hero.stats.activities')}</p>
               </div>
               <div className="w-px h-8 sm:h-10 bg-white/20 hidden sm:block" />
               <div className="text-center">
                 <p className="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl text-[#FFD100]">5+</p>
-                <p className="text-white/60 text-[10px] sm:text-xs md:text-sm mt-1 whitespace-nowrap">Partenaires locaux</p>
+                <p className="text-white/60 text-[10px] sm:text-xs md:text-sm mt-1 whitespace-nowrap">{t('hero.stats.partners')}</p>
               </div>
             </motion.div>
 
@@ -130,7 +130,7 @@ export default function Hero() {
           className="flex flex-col items-center gap-2 cursor-pointer"
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
         >
-          <span className="text-white/50 text-[10px] sm:text-xs font-medium">Découvrir</span>
+          <span className="text-white/50 text-[10px] sm:text-xs font-medium">{t('hero.scroll')}</span>
           <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>

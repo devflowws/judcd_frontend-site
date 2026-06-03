@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom'; // <-- AJOUT : Import indispensable pour la navigation
+import { Link } from 'react-router-dom';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
-import { getActualites } from '../../../services/blogService';
+import { get } from '@services/api';
+import { API } from '@utils/constants';
 
 export default function Blog() {
   const { t } = useLanguage();
@@ -15,17 +16,17 @@ export default function Blog() {
 
     const fetchActualites = async () => {
       try {
-        const response = await getActualites();
-        const rawdata = response && response.data ? response.data : [];
+        const response = await get(API.endpoints.public.actualites);
+        const rawdata = Array.isArray(response?.data) ? response.data : (response?.data?.results ?? []);
 
-        const mappedData = rawdata.map(actualite => ({
-          id: actualite.id,
+        const mappedData = rawdata.slice(0, 6).map(actualite => ({
+          pid: actualite.public_id || actualite.id,
           title: actualite.titre || "Sans titre",
-          excerpt: actualite.description ? actualite.description.substring(0, 120) + '...' : "", 
+          excerpt: actualite.description ? actualite.description.substring(0, 120) + '...' : "",
           date: actualite.date ? new Date(actualite.date).toLocaleDateString() : "",
           image: actualite.image_couverture || "",
           category: actualite.type_actualite_details?.nom || "Actualité",
-          readTime: actualite.temps_lecture || "3 min" 
+          readTime: `${actualite.temps_lecture || 1} min`
         }));
 
         if (isMounted) {
@@ -43,32 +44,44 @@ export default function Blog() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-20 text-[#002060] font-semibold">Chargement des actualités...</div>;
+    return <div className="text-center py-20 text-[#002060] font-semibold">{t('loading')}</div>;
+  }
+
+  if (!loading && blogs.length === 0) {
+    return (
+      <section className="py-20 md:py-28 bg-[#F8FAF9]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-sm font-semibold text-[#008751] uppercase tracking-wider mb-3 block">{t('section.blog')}</span>
+          <h2 className="font-heading font-extrabold text-3xl text-[#002060] mb-4">{t('blog.title')}</h2>
+          <p className="text-[#666666]">{t('blog.noArticles')}</p>
+        </div>
+      </section>
+    );
   }
 
   return (
     <section className="py-20 md:py-28 bg-[#F8FAF9] relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-20 right-20 w-40 h-40 bg-[#008751] rounded-full" />
         <div className="absolute bottom-20 left-20 w-32 h-32 bg-[#FFD100] rounded-full" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeInView className="text-center mb-16">
           <span className="text-sm font-semibold text-[#008751] uppercase tracking-wider mb-3 block">
             {t('section.blog')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            Actualités & Événements
+            {t('blog.title')}
           </h2>
           <p className="text-[#666666] text-lg max-w-3xl mx-auto">
-            Découvrez nos dernières actualités, événements et initiatives qui font avancer notre mission
+            {t('blog.description')}
           </p>
         </FadeInView>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map((actualite, index) => (
-            <FadeInView key={actualite.id || index} delay={index * 0.1}>
+            <FadeInView key={actualite.pid || index} delay={index * 0.1}>
               <motion.article
                 whileHover={{ y: -5 }}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
@@ -106,11 +119,11 @@ export default function Blog() {
                   </p>
 
                   {/* Redirection vers le détail de l'article spécifique */}
-                  <Link 
-                    to={`/blogs/${actualite.id}`}
+                  <Link
+                    to={`/actualites/${actualite.pid}`}
                     className="inline-flex items-center gap-2 text-[#008751] font-semibold hover:text-[#006B41] transition-colors"
                   >
-                    Lire la suite
+                    {t('blog.readMore')}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
@@ -124,10 +137,10 @@ export default function Blog() {
         {/* Bouton voir tout unifié avec les bons styles du bouton vert */}
         <FadeInView className="text-center mt-12">
           <Link
-            to="/blogs"
+            to="/actualites"
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#008751] text-white font-bold rounded-xl hover:bg-[#006B41] transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-green-500/40 group"
           >
-            Voir toutes les actualités
+            {t('blog.viewAll')}
             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>

@@ -225,7 +225,7 @@ export default function Footer() {
               <span className="absolute -bottom-2 left-0 w-8 h-0.5 bg-[#FFD100] rounded-full" />
             </h4>
             <p className="text-white/70 text-sm mb-4">
-              Restez informe de nos actions et evenements.
+              {t('footer.newsletterDesc')}
             </p>
             <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
               <div className="relative">
@@ -246,7 +246,7 @@ export default function Footer() {
               </div>
             </form>
             <p className="text-white/40 text-xs mt-4">
-              En vous inscrivant, vous acceptez de recevoir nos actualités.
+              {t('footer.newsletterConsent')}
             </p>
           </motion.div>
 
@@ -268,7 +268,7 @@ export default function Footer() {
                 {t('footer.privacy')}
               </Link>
               <span className="text-white/30 text-sm">
-                Propulsé par MIABEINNOVATION
+                {t('footer.poweredBy')} MIABEINNOVATION
               </span>
             </div>
           </div>

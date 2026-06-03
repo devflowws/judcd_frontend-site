@@ -45,10 +45,10 @@ export default function Contact() {
             {t('section.contact')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            Restons en contact
+            {t('contact.title')}
           </h2>
           <p className="text-[#666666] text-lg">
-            Une question, une proposition de partenariat ou l'envie de contribuer ? Écrivez-nous.
+            {t('contact.description')}
           </p>
         </FadeInView>
 
@@ -68,16 +68,16 @@ export default function Contact() {
                   </svg>
                 </div>
                 <h3 className="font-heading font-bold text-2xl text-[#002060] mb-3">
-                  Message envoyé avec succès !
+                  {t('contact.success')}
                 </h3>
                 <p className="text-[#666666] mb-6">
-                  Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.
+                  {t('contact.success.text')}
                 </p>
                 <button
                   onClick={resetForm}
                   className="px-6 py-3 bg-[#008751] text-white font-semibold rounded-xl hover:bg-[#006B41] transition-all"
                 >
-                  Envoyer un autre message
+                  {t('contact.sendAnother')}
                 </button>
               </motion.div>
             ) : (
@@ -99,7 +99,7 @@ export default function Contact() {
                           ? 'border-red-500 focus:ring-red-200'
                           : 'border-gray-200 focus:border-[#008751] focus:ring-green-100'
                       }`}
-                      placeholder="Votre nom complet"
+                      placeholder={t('cform.namePh')}
                     />
                     {errors.name && (
                       <p className="text-red-500 text-xs mt-1">{errors.name}</p>
@@ -182,7 +182,7 @@ export default function Contact() {
                         ? 'border-red-500 focus:ring-red-200'
                         : 'border-gray-200 focus:border-[#008751] focus:ring-green-100'
                     }`}
-                    placeholder="Votre message..."
+                    placeholder={t('cform.messagePh')}
                   />
                   {errors.message && (
                     <p className="text-red-500 text-xs mt-1">{errors.message}</p>
@@ -202,7 +202,7 @@ export default function Contact() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        Envoi en cours...
+                        {t('cform.sending')}
                       </>
                     ) : (
                       <>
@@ -222,7 +222,7 @@ export default function Contact() {
           <FadeInView className="lg:col-span-2" direction="right">
             <div className="bg-white rounded-2xl p-8 md:p-10 shadow-xl h-full">
               <h3 className="font-heading font-bold text-xl text-[#002060] mb-8">
-                Nos coordonnées
+                {t('contact.subtitle')}
               </h3>
 
               <div className="space-y-6">
@@ -235,7 +235,7 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#333333] mb-1">Adresse</p>
+                    <p className="font-semibold text-[#333333] mb-1">{t('contact.info.address')}</p>
                     <p className="text-[#666666] text-sm leading-relaxed">
                       {ASSOCIATION.address}<br />
                       {ASSOCIATION.city}, {ASSOCIATION.country}
@@ -251,7 +251,7 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#333333] mb-1">Téléphone</p>
+                    <p className="font-semibold text-[#333333] mb-1">{t('contact.info.phone')}</p>
                     <a href={`tel:${ASSOCIATION.phone}`} className="text-[#008751] text-sm hover:underline">
                       {formatPhoneNumber(ASSOCIATION.phone)}
                     </a>
@@ -266,7 +266,7 @@ export default function Contact() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#333333] mb-1">Email</p>
+                    <p className="font-semibold text-[#333333] mb-1">{t('contact.info.email')}</p>
                     <a href={`mailto:${ASSOCIATION.email}`} className="text-[#008751] text-sm hover:underline">
                       {ASSOCIATION.email}
                     </a>

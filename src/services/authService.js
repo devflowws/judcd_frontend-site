@@ -1,4 +1,4 @@
-import { post, setAuthTokens, clearAuthTokens, getAccessToken } from './api';
+import { get, post, setAuthTokens, clearAuthTokens, getAccessToken } from './api';
 import { API } from '@utils/constants';
 
 // ==========================================
@@ -12,13 +12,15 @@ export async function login(username, password) {
   if (!username || !password) {
     return {
       success: false,
-      error: { detail: 'Veuillez fournir un nom d\'utilisateur et un mot de passe.' },
+      error: { detail: 'Veuillez fournir un email et un mot de passe.' },
     };
   }
 
   try {
+    const id = username.trim();
     const response = await post(API.endpoints.auth.login, {
-      email: email.trim(),
+      username: id,
+      email: id,
       password: password,
     });
 
@@ -41,22 +43,11 @@ export async function login(username, password) {
 }
 
 /**
- * Deconnexion - Nettoyage côté client (pas d'endpoint logout nécessaire)
+ * Deconnexion — nettoyage côté client uniquement
  */
 export async function logout() {
-  try {
-    const refreshToken = localStorage.getItem('judcd_refresh_token');
-    if (refreshToken) {
-      await post(`${API.baseURL}/auth/logout/`, {
-        refresh: refreshToken,
-      });
-    }
-  } catch (error) {
-    console.error('Erreur lors de la déconnexion:', error);
-  } finally {
-    clearAuthTokens();
-    window.location.href = '/admin/login';
-  }
+  clearAuthTokens();
+  window.location.href = '/admin/login';
 }
 
 /**
@@ -71,57 +62,7 @@ export async function getCurrentUser() {
     };
   }
 
-  return await get(`${API.baseURL}/auth/me/`);
-}
-
-/**
- * Modifie le mot de passe
- */
-export async function changePassword(currentPassword, newPassword) {
-  if (!currentPassword || !newPassword) {
-    return {
-      success: false,
-      error: { detail: 'Veuillez fournir l\'ancien et le nouveau mot de passe.' },
-    };
-  }
-
-  return await post(`${API.baseURL}/auth/change-password/`, {
-    current_password: currentPassword,
-    new_password: newPassword,
-  });
-}
-
-/**
- * Demande de reinitialisation de mot de passe (mot de passe oublie)
- */
-export async function requestPasswordReset(email) {
-  if (!email) {
-    return {
-      success: false,
-      error: { detail: 'Veuillez fournir une adresse email.' },
-    };
-  }
-
-  return await post(`${API.baseURL}/auth/password-reset/`, {
-    email: email.trim(),
-  });
-}
-
-/**
- * Confirme la reinitialisation de mot de passe
- */
-export async function confirmPasswordReset(token, newPassword) {
-  if (!token || !newPassword) {
-    return {
-      success: false,
-      error: { detail: 'Token et nouveau mot de passe requis.' },
-    };
-  }
-
-  return await post(`${API.baseURL}/auth/password-reset/confirm/`, {
-    token: token,
-    new_password: newPassword,
-  });
+  return await get(API.endpoints.auth.me);
 }
 
 /**

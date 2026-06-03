@@ -14,7 +14,7 @@ export async function getNewsletterById(id) {
 }
 
 export async function createNewsletter(data) {
-  return await post(API.endpoints.newsletter, data);
+  return await post(API.endpoints.public.newsletter, data);
 }
 
 export async function updateNewsletter(id, data) {

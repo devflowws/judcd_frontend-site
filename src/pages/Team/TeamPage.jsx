@@ -55,7 +55,7 @@ export default function TeamPage() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-20">Chargement des membres...</div>;
+    return <div className="text-center py-20">{t('teampage.loading')}</div>;
   }
 
 
@@ -85,7 +85,7 @@ export default function TeamPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              Notre Bureau Exécutif
+              {t('teampage.banner.title')}
             </motion.h1>
             <motion.p
               className="text-white/80 text-lg max-w-3xl mx-auto"
@@ -93,7 +93,7 @@ export default function TeamPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Une équipe de jeunes passionnés, déterminés à faire la différence dans leurs communautés à travers des actions concrètes et durables.
+              {t('teampage.banner.desc')}
             </motion.p>
           </div>
         </section>
@@ -150,17 +150,16 @@ export default function TeamPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <FadeInView>
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060] mb-6">
-                Rejoignez l'aventure
+                {t('teampage.join.h')}
               </h2>
               <p className="text-[#666666] text-lg mb-8">
-                Vous avez envie de vous engager et de contribuer au développement de votre communauté ? 
-                Rejoignez JUDCD et faites partie du changement.
+                {t('teampage.join.text')}
               </p>
               <a
                 href="mailto:associationjudcd@gmail.com?subject=Candidature%20bénévolat%20JUDCD"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-[#008751] text-white font-bold rounded-xl hover:bg-[#006B41] transition-all shadow-lg shadow-green-500/25 group"
               >
-                Nous rejoindre
+                {t('teampage.join.btn')}
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>

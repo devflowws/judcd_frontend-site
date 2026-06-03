@@ -54,20 +54,19 @@ export default function Donation() {
                 {t('donation.title')}
               </span>
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl mb-6 leading-tight">
-                Soutenez notre mission
+                {t('donation.support')}
               </h2>
               <p className="text-white/80 text-lg leading-relaxed mb-8">
-                Votre don, quel que soit son montant, nous permet de financer nos projets communautaires,
-                nos formations et nos actions de sensibilisation. Chaque contribution compte.
+                {t('donation.sectionDesc')}
               </p>
 
               {/* Arguments */}
               <div className="space-y-4 mb-10">
                 {[
-                  'Soutenez les initiatives locales de développement',
-                  'Contribuez à la formation des jeunes leaders',
-                  'Participez à la protection de l\'environnement',
-                  'Aidez les communautés vulnérables',
+                  t('donation.arg1'),
+                  t('donation.arg2'),
+                  t('donation.arg3'),
+                  t('donation.arg4'),
                 ].map((item, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="w-6 h-6 bg-[#FFD100]/20 rounded-full flex items-center justify-center flex-shrink-0">
@@ -83,7 +82,7 @@ export default function Donation() {
               {/* Contact pour don */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <p className="text-white/80 text-sm">
-                  Pour toute question concernant les dons, contactez-nous à{' '}
+                  {t('donation.contactInfo')}{' '}
                   <a href="mailto:associationjudcd@gmail.com" className="text-[#FFD100] hover:underline font-semibold">
                     associationjudcd@gmail.com
                   </a>
@@ -113,26 +112,26 @@ export default function Donation() {
                 </p>
                 {donationReference && (
                   <p className="text-sm text-[#666666] mb-6">
-                    Référence : <span className="font-bold text-[#008751]">{donationReference}</span>
+                    {t('donation.refLabel')} <span className="font-bold text-[#008751]">{donationReference}</span>
                   </p>
                 )}
                 <button
                   onClick={resetForm}
                   className="px-6 py-3 bg-[#008751] text-white font-semibold rounded-xl hover:bg-[#006B41] transition-all"
                 >
-                  Faire un autre don
+                  {t('donation.another')}
                 </button>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 md:p-10 shadow-2xl">
                 <h3 className="font-heading font-bold text-xl text-[#002060] mb-6">
-                  Faire un don
+                  {t('nav.donate')}
                 </h3>
 
                 {/* Nom complet */}
                 <div className="mb-5">
                   <label htmlFor="donationName" className="block text-sm font-semibold text-[#333333] mb-2">
-                    Nom complet *
+                    {t('cform.name')} *
                   </label>
                   <input
                     type="text"
@@ -144,7 +143,7 @@ export default function Donation() {
                         ? 'border-red-500 focus:ring-red-200'
                         : 'border-gray-200 focus:border-[#008751] focus:ring-green-100'
                     }`}
-                    placeholder="Votre nom complet"
+                    placeholder={t('donation.namePh')}
                   />
                   {errors.fullName && (
                     <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
@@ -154,7 +153,7 @@ export default function Donation() {
                 {/* Email */}
                 <div className="mb-5">
                   <label htmlFor="donationEmail" className="block text-sm font-semibold text-[#333333] mb-2">
-                    Email *
+                    {t('cform.email')} *
                   </label>
                   <input
                     type="email"
@@ -220,7 +219,7 @@ export default function Donation() {
                         ? 'border-red-500 focus:ring-red-200'
                         : 'border-gray-200 focus:border-[#008751] focus:ring-green-100'
                     }`}
-                    placeholder="Autre montant en FCFA"
+                    placeholder={t('donation.otherAmount')}
                     min="1000"
                   />
                   {errors.amount && (
@@ -240,14 +239,14 @@ export default function Donation() {
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#008751] focus:ring-2 focus:ring-green-100 transition-all bg-white"
                   >
                     <option value="mobile_money">Mobile Money (Flooz / T-Money)</option>
-                    <option value="bank_transfer">Virement bancaire</option>
+                    <option value="bank_transfer">{t('pay.bank')}</option>
                   </select>
                 </div>
 
                 {/* Message */}
                 <div className="mb-6">
                   <label htmlFor="donationMessage" className="block text-sm font-semibold text-[#333333] mb-2">
-                    Message (optionnel)
+                    {t('donation.messageOpt')}
                   </label>
                   <textarea
                     id="donationMessage"
@@ -255,7 +254,7 @@ export default function Donation() {
                     onChange={(e) => handleChange('message', e.target.value)}
                     rows="2"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#008751] focus:ring-2 focus:ring-green-100 transition-all resize-none"
-                    placeholder="Un message d'encouragement..."
+                    placeholder={t('donation.messagePh')}
                   />
                 </div>
 
@@ -271,7 +270,7 @@ export default function Donation() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Traitement en cours...
+                      {t('donation.processing')}
                     </>
                   ) : (
                     <>

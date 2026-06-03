@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ASSOCIATION, MISSION, KEY_FIGURES, PAGE_CONTENT } from '@utils/constants';
+import { ASSOCIATION, MISSION, KEY_FIGURES } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView from '@components/ui/Animations/FadeInView';
 
@@ -16,8 +16,8 @@ export default function AboutPage() {
   return (
     <>
       <Helmet>
-        <title>À propos - {ASSOCIATION.name}</title>
-        <meta name="description" content={PAGE_CONTENT.about.content} />
+        <title>{t('nav.about')} - {ASSOCIATION.name}</title>
+        <meta name="description" content={t('about.content1')} />
       </Helmet>
 
       <motion.main
@@ -39,7 +39,7 @@ export default function AboutPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              À propos de {ASSOCIATION.name}
+              {t('aboutpage.banner')} {ASSOCIATION.name}
             </motion.h1>
             <motion.p
               className="text-white/80 text-lg max-w-3xl mx-auto"
@@ -47,7 +47,7 @@ export default function AboutPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              {PAGE_CONTENT.about.content}
+              {t('about.content1')}
             </motion.p>
           </div>
         </section>
@@ -57,34 +57,34 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <FadeInView className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060] mb-6">
-                Notre mission
+                {t('aboutpage.mission.h')}
               </h2>
               <p className="text-[#666666] text-lg leading-relaxed">
-                {MISSION.mission}
+                {t('home.mission.statement')}
               </p>
             </FadeInView>
 
             <FadeInView className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060] mb-6">
-                Notre vision
+                {t('aboutpage.vision.h')}
               </h2>
               <p className="text-[#666666] text-lg leading-relaxed">
-                {MISSION.vision}
+                {t('home.vision.statement')}
               </p>
             </FadeInView>
 
             <FadeInView>
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060] mb-10 text-center">
-                Nos valeurs
+                {t('aboutpage.values.h')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 {MISSION.values.map((value, index) => (
                   <div
-                    key={index}
+                    key={value.name}
                     className="bg-[#F8FAF9] rounded-xl p-6 text-center border-t-4 border-[#008751] hover:shadow-lg transition-all"
                   >
-                    <h3 className="font-heading font-bold text-[#002060] mb-2">{value.name}</h3>
-                    <p className="text-sm text-[#666666]">{value.description}</p>
+                    <h3 className="font-heading font-bold text-[#002060] mb-2">{t(`value.${index}.name`)}</h3>
+                    <p className="text-sm text-[#666666]">{t(`value.${index}.desc`)}</p>
                   </div>
                 ))}
               </div>
@@ -97,7 +97,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <FadeInView className="text-center mb-16">
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060]">
-                JUDCD en chiffres
+                {t('aboutpage.figures.h')}
               </h2>
             </FadeInView>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -107,7 +107,7 @@ export default function AboutPage() {
                     <p className="font-heading font-extrabold text-5xl text-[#008751] mb-2">
                       {stat.value}{stat.suffix}
                     </p>
-                    <p className="text-[#666666] font-medium">{stat.label}</p>
+                    <p className="text-[#666666] font-medium">{t(`figure.${index}.label`)}</p>
                   </div>
                 </FadeInView>
               ))}
@@ -120,23 +120,23 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <FadeInView>
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060] mb-6">
-                Rejoignez-nous
+                {t('aboutpage.cta.h')}
               </h2>
               <p className="text-[#666666] text-lg mb-8">
-                Vous partagez nos valeurs et souhaitez contribuer au développement durable de nos communautés ?
+                {t('aboutpage.cta.text')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/adherer"
                   className="px-8 py-4 bg-[#008751] text-white font-bold rounded-xl hover:bg-[#006B41] transition-all shadow-lg shadow-green-500/25"
                 >
-                  Devenir membre
+                  {t('aboutpage.cta.member')}
                 </Link>
                 <Link
                   to="/contact"
                   className="px-8 py-4 border-2 border-[#008751] text-[#008751] font-bold rounded-xl hover:bg-[#008751] hover:text-white transition-all"
                 >
-                  Nous contacter
+                  {t('aboutpage.cta.contact')}
                 </Link>
               </div>
             </FadeInView>

@@ -24,7 +24,7 @@ export async function getPosts(params = {}) {
 
 
 export async function getActualites(params = {}) {
-  return await get(API.endpoints.actualite, { params });
+  return await get(API.endpoints.actualite, params);
 }
 
 // export async function getActualites(params = {}) {
@@ -34,7 +34,7 @@ export async function getActualites(params = {}) {
 
 // Ajoute aussi cette fonction pour récupérer les filtres dans la barre latérale ou les onglets
 export async function getTypeActualites() {
-  return await get(API.endpoints.typeActualite); // Assure-toi d'avoir cet endpoint dans tes constantes
+  return await get(API.endpoints.typeActualite);
 }
 /**
  * Recupere un article par son slug

@@ -268,14 +268,17 @@ export const PAYMENT_METHODS = [
 
 // Endpoints API
 export const API = {
-  baseURL:'http://localhost:8000/api/v1',
+  // 127.0.0.1 (IPv4 explicite) — évite le souci Windows où "localhost" résout
+  // d'abord en IPv6 (::1) que le serveur Django (IPv4 only) n'écoute pas.
+  baseURL: 'http://127.0.0.1:8000/api/v1',
   endpoints: {
     // Authentification
     auth: {
       login: '/login/',
       refresh: '/refresh/',
+      me: '/auth/me/',
     },
-    // Ressources principales
+    // Ressources principales (admin — nécessitent JWT)
     action: '/action/',
     contact: '/contact/',
     don: '/don/',
@@ -288,6 +291,43 @@ export const API = {
     typeActualite: '/type-actualite/',
     actualite: '/actualite/',
     typePartenaire: '/type-partenaire/',
+    // Endpoints publics (sans authentification)
+    public: {
+      partenaires: '/public/partenaires/',
+      team: '/public/team/',
+      actions: '/public/actions/',
+      temoignages: '/public/temoignages/',
+      temoignage: '/public/temoignage/',
+      typesActions: '/public/types-actions/',
+      typesPartenaires: '/public/types-partenaires/',
+      contact: '/public/contact/',
+      newsletter: '/public/newsletter/',
+      donation: '/public/donation/',
+      galerie: '/public/galerie-action/',
+      actualites: '/public/actualites/',
+      stats: '/public/stats/',
+    },
+    // Endpoints admin (alias clairs)
+    admin: {
+      adhesions: '/admin/adhesions/',
+      adhesionStats: '/admin/adhesions/statistiques/',
+      contact: '/contact/',
+      newsletter: '/newsletter/',
+      partenaires: '/partenaire/',
+      team: '/membre-equipe/',
+      temoignages: '/temoignage/',
+      galerie: '/galerie-action/',
+      actions: '/action/',
+      actualites: '/actualite/',
+      dons: '/don/',
+      typesActualite: '/type-actualite/',
+      typesAction: '/type-action/',
+      typesPartenaires: '/type-partenaire/',
+      // alias courts
+      typePartenaire: '/type-partenaire/',
+      typeActualite: '/type-actualite/',
+      typeAction: '/type-action/',
+    },
   },
 };
 

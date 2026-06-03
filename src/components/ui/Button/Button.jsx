@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@context/LanguageContext';
 
 // ==========================================
 // BOUTON REUTILISABLE JUDCD
@@ -143,7 +144,9 @@ export default function Button({
 }
 
 // Variante speciale : bouton de don avec animation pulse
-export function DonateButton({ children = 'Faire un don', size = 'md', className = '', ...props }) {
+export function DonateButton({ children, size = 'md', className = '', ...props }) {
+  const { t } = useLanguage();
+  const label = children || t('nav.donate');
   return (
     <Button
       variant="danger"
@@ -156,7 +159,7 @@ export function DonateButton({ children = 'Faire un don', size = 'md', className
       }
       {...props}
     >
-      {children}
+      {label}
     </Button>
   );
 }

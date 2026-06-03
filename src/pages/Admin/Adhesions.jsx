@@ -1,517 +1,382 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import AdminLayout from '@components/admin/AdminLayout';
+import { formatDateShort, formatPrice } from '@utils/formatters';
+
+const API_URL = 'http://127.0.0.1:8000/api/v1';
+const token   = () => localStorage.getItem('judcd_access_token');
+
+const Icon = ({ path, className = 'w-5 h-5' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={path} />
+  </svg>
+);
+
+const STATUS_CONFIG = {
+  EN_ATTENTE: { label: 'En attente',  bg: '#FEF3C7', text: '#D97706', dot: '#D97706' },
+  APPROUVEE:  { label: 'Approuvée',   bg: '#ECFDF5', text: '#059669', dot: '#059669' },
+  REJETEE:    { label: 'Rejetée',     bg: '#FEF2F2', text: '#DC2626', dot: '#DC2626' },
+  EXPIREE:    { label: 'Expirée',     bg: '#F3F4F6', text: '#6B7280', dot: '#6B7280' },
+};
+
+const StatusBadge = ({ status }) => {
+  const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.EXPIREE;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold" style={{ backgroundColor: cfg.bg, color: cfg.text }}>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.dot }} />
+      {cfg.label}
+    </span>
+  );
+};
 
 export default function Adhesions() {
-  const [adhesions, setAdhesions] = useState([]);
-  const [stats, setStats] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [selectedAdhesion, setSelectedAdhesion] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [showActionModal, setShowActionModal] = useState(false);
+  const [adhesions, setAdhesions]     = useState([]);
+  const [stats, setStats]             = useState({});
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState('');
+  const [selected, setSelected]       = useState(null);
+  const [showAction, setShowAction]   = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [filter, setFilter] = useState('TOUT');
-  const [searchTerm, setSearchTerm] = useState('');
   const [adminComment, setAdminComment] = useState('');
+  const [filter, setFilter]           = useState('TOUT');
+  const [search, setSearch]           = useState('');
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
+  useEffect(() => { loadData(); }, []);
 
   const loadData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      // Charger les adhésions et les statistiques
-      const [adhesionsRes, statsRes] = await Promise.all([
-        fetch(`${'http://localhost:8000/api/v1'}/admin/adhesions/`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('judcd_access_token')}`
-          }
-        }),
-        fetch(`${'http://localhost:8000/api/v1'}/admin/adhesions/statistiques/`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('judcd_access_token')}`
-          }
-        })
+      const h = { Authorization: `Bearer ${token()}` };
+      const [ar, sr] = await Promise.all([
+        fetch(`${API_URL}/admin/adhesions/`,             { headers: h }),
+        fetch(`${API_URL}/admin/adhesions/statistiques/`, { headers: h }),
       ]);
-
-      const adhesionsData = await adhesionsRes.json();
-      // console.log("Adhesions data:", adhesionsData);
-      const statsData = await statsRes.json();
-      // setAdminComment('');
-
-      if (adhesionsData.success) {
-        setAdhesions(adhesionsData.data || []);
-      } else {
-        setError('Erreur lors du chargement des adhésions');
-      }
-
-      if (statsData.success) {
-        setStats(statsData.data || {});
-      }
-    } catch (err) {
-      setError('Erreur de connexion au serveur');
-    } finally {
-      setLoading(false);
-    }
+      const ad = await ar.json(); if (ad.success) setAdhesions(ad.data || []);
+      const sd = await sr.json(); if (sd.success) setStats(sd.data || {});
+    } catch { setError('Erreur de connexion au serveur.'); }
+    finally   { setLoading(false); }
   };
 
-
-  // 1. Mise à jour de handleAction pour vider le commentaire après réussite
-
-  const handleAction = async (adhesion, action, commentaires = '') => {
+  const handleAction = async (action, commentaires = '') => {
+    if (!selected) return;
     setActionLoading(true);
-    
     try {
-      const response = await fetch(`${'http://localhost:8000/api/v1'}/admin/adhesions/${adhesion.id}/action/`, {
+      const r = await fetch(`${API_URL}/admin/adhesions/${selected.id}/action/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('judcd_access_token')}`
-        },
-        body: JSON.stringify({ action, commentaires })
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+        body: JSON.stringify({ action, commentaires }),
       });
-
-      const result = await response.json();
-
-      if (result.success) {
+      const data = await r.json();
+      if (data.success) {
         loadData();
-        setShowActionModal(false);
-        setSelectedAdhesion(null);
-        setAdminComment(''); // 👈 Ajoutez ceci pour vider le champ texte pour la prochaine fois
-        
-        alert(`Action "${action}" effectuée avec succès`);
+        setShowAction(false);
+        setSelected(null);
+        setAdminComment('');
       } else {
-        setError(result.error?.detail || 'Erreur lors de l\'action');
+        setError(data.error?.detail || 'Erreur lors de l\'action.');
       }
-    } catch (err) {
-      setError('Erreur de connexion au serveur');
-    } finally {
-      setActionLoading(false);
-    }
+    } catch { setError('Erreur de connexion.'); }
+    finally   { setActionLoading(false); }
   };
 
-  // 2. Fonction pour fermer proprement les modals et vider les états temporaires
-  const closeActionModal = () => {
-    setShowActionModal(false);
-    setSelectedAdhesion(null);
-    setAdminComment(''); // ✨ Nettoyage si on clique sur "Annuler"
-  };
-
-  const filteredAdhesions = adhesions.filter(adhesion => {
-    const matchesFilter = filter === 'TOUT' || adhesion.statut === filter;
-    const matchesSearch = searchTerm === '' || 
-      adhesion.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      adhesion.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      adhesion.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesFilter && matchesSearch;
+  const filtered = adhesions.filter(a => {
+    const matchFilter = filter === 'TOUT' || a.statut === filter;
+    const matchSearch = !search ||
+      a.nom.toLowerCase().includes(search.toLowerCase()) ||
+      a.prenom.toLowerCase().includes(search.toLowerCase()) ||
+      a.email.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
   });
 
-  const getStatColor = (key) => {
-    const colors = {
-      total_adhesions: 'bg-blue-500',
-      adhesions_en_attente: 'bg-yellow-500',
-      adhesions_approuvees: 'bg-green-500',
-      adhesions_rejetees: 'bg-red-500',
-      adhesions_valides: 'bg-purple-500'
-    };
-    return colors[key] || 'bg-gray-500';
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      'EN_ATTENTE': 'bg-yellow-100 text-yellow-800',
-      'APPROUVEE': 'bg-green-100 text-green-800',
-      'REJETEE': 'bg-red-100 text-red-800',
-      'EXPIREE': 'bg-gray-100 text-gray-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusText = (status) => {
-    const texts = {
-      'EN_ATTENTE': 'En attente',
-      'APPROUVEE': 'Approuvée',
-      'REJETEE': 'Rejetée',
-      'EXPIREE': 'Expirée'
-    };
-    return texts[status] || status;
-  };
-
-  if (loading) {
-    return (
-      <AdminLayout title="Gestion des Adhésions">
-        <Helmet>
-          <title>Gestion des Adhésions - Administration JUDCD</title>
-        </Helmet>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="animate-spin w-10 h-10 border-3 border-[#008751] border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-gray-600 mt-4 font-medium">Chargement des adhésions...</p>
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
+  const statCards = [
+    { key: 'total_adhesions',     label: 'Total',      color: '#002060', bg: '#EEF2FF'  },
+    { key: 'adhesions_en_attente',label: 'En attente', color: '#D97706', bg: '#FEF3C7'  },
+    { key: 'adhesions_approuvees',label: 'Approuvées', color: '#059669', bg: '#ECFDF5'  },
+    { key: 'adhesions_valides',   label: 'Valides',    color: '#7C3AED', bg: '#EDE9FE'  },
+    { key: 'revenus_totaux',      label: 'Revenus',    color: '#DC2626', bg: '#FEF2F2', format: v => formatPrice(v) },
+  ];
 
   return (
-    <AdminLayout title="Gestion des Adhésions">
-      <Helmet>
-        <title>Gestion des Adhésions - Administration JUDCD</title>
-      </Helmet>
+    <AdminLayout title="Adhésions">
+      <Helmet><title>Adhésions — Administration JUDCD</title></Helmet>
 
-      <div className="p-4 sm:p-6 lg:p-8">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 mb-6">
-            {error}
+      <div className="p-4 sm:p-6 space-y-5">
+
+        {/* En-tête */}
+        <div className="bg-white rounded-2xl border border-gray-100 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="font-heading font-bold text-xl text-gray-900">Gestion des adhésions</h1>
+            <p className="text-sm text-gray-400 mt-0.5">{adhesions.length} dossier{adhesions.length !== 1 ? 's' : ''} · Cotisation 5 000 FCFA</p>
+          </div>
+          <button onClick={loadData} className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-500 hover:text-[#002060] border border-gray-200 rounded-xl transition-all">
+            <Icon path="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" className="w-4 h-4" />
+            Actualiser
+          </button>
+        </div>
+
+        {/* Statistiques */}
+        {!loading && Object.keys(stats).length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {statCards.map(({ key, label, color, bg, format }) => (
+              <div key={key} className="bg-white border border-gray-100 rounded-2xl p-4">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: bg }}>
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                </div>
+                <p className="font-heading font-extrabold text-xl text-gray-900">
+                  {format ? format(stats[key] || 0) : (stats[key] || 0)}
+                </p>
+                <p className="text-xs text-gray-400 font-medium mt-0.5">{label}</p>
+              </div>
+            ))}
           </div>
         )}
 
-        {/* Statistiques */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          {[
-            { key: 'total_adhesions', label: 'Total adhésions', value: stats.total_adhesions || 0 },
-            { key: 'adhesions_en_attente', label: 'En attente', value: stats.adhesions_en_attente || 0 },
-            { key: 'adhesions_approuvees', label: 'Approuvées', value: stats.adhesions_approuvees || 0 },
-            { key: 'adhesions_valides', label: 'Valides', value: stats.adhesions_valides || 0 },
-            { key: 'revenus_totaux', label: 'Revenus totaux', value: `${stats.revenus_totaux || 0} FCFA` }
-          ].map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <div className={`w-12 h-12 ${getStatColor(stat.key)} rounded-full flex items-center justify-center text-white`}>
-                  <span className="text-xl font-bold">{stat.value.toString().charAt(0)}</span>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {error && (
+          <div className="bg-red-50 border border-red-100 rounded-xl px-5 py-3.5 text-sm text-red-600 flex items-center justify-between">
+            <span>{error}</span>
+            <button onClick={() => setError('')} className="text-red-400 hover:text-red-600">
+              <Icon path="M6 18L18 6M6 6l12 12" className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-        {/* Filtres et recherche */}
-        <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100 mb-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <input
-                type="text"
-                placeholder="Rechercher par nom, prénom ou email..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008751] focus:border-transparent"
-              />
+        {/* Filtres + recherche */}
+        <div className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+            <div className="flex flex-wrap gap-2">
+              {['TOUT', 'EN_ATTENTE', 'APPROUVEE', 'REJETEE', 'EXPIREE'].map(s => {
+                const cfg = s === 'TOUT' ? { label: 'Tout', color: '#002060', bg: '#EEF2FF' } : STATUS_CONFIG[s];
+                const active = filter === s;
+                return (
+                  <button key={s} onClick={() => setFilter(s)}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                    style={active ? { backgroundColor: cfg.color || cfg.dot, color: '#fff' } : { backgroundColor: '#F3F4F6', color: '#6B7280' }}>
+                    {cfg.label || 'Tout'}
+                    {s !== 'TOUT' && <span className="ml-1 opacity-70">({adhesions.filter(a => a.statut === s).length})</span>}
+                  </button>
+                );
+              })}
             </div>
-            <div className="flex gap-2">
-              {['TOUT', 'EN_ATTENTE', 'APPROUVEE', 'REJETEE', 'EXPIREE'].map(status => (
-                <button
-                  key={status}
-                  onClick={() => setFilter(status)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                    filter === status
-                      ? 'bg-[#008751] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {status === 'TOUT' ? 'Tout' : getStatusText(status)}
-                </button>
-              ))}
+            <div className="relative">
+              <Icon path="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" className="w-4 h-4 text-gray-300 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher..."
+                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:border-[#002060]/30 w-52 transition-all" />
             </div>
           </div>
         </div>
 
-        {/* Tableau des adhésions */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Membre
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date de demande
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Statut
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Validité
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredAdhesions.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
-                      <div className="text-5xl mb-4">📋</div>
-                      <p className="text-lg font-medium">Aucune adhésion trouvée</p>
-                      <p className="text-sm mt-2">
-                        {searchTerm || filter !== 'TOUT' 
-                          ? 'Essayez de modifier vos filtres de recherche' 
-                          : 'Les nouvelles demandes d\'adhésion apparaîtront ici'}
-                      </p>
-                    </td>
+        {/* Tableau */}
+        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
+          {loading ? (
+            <div className="p-6 space-y-3">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="animate-pulse flex items-center gap-4 py-2">
+                  <div className="w-9 h-9 bg-gray-100 rounded-full flex-shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3.5 bg-gray-100 rounded w-40" />
+                    <div className="h-3 bg-gray-100 rounded w-28" />
+                  </div>
+                  <div className="w-20 h-6 bg-gray-100 rounded-full" />
+                  <div className="w-16 h-3 bg-gray-100 rounded" />
+                </div>
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-20 text-center">
+              <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Icon path="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" className="w-6 h-6 text-gray-300" />
+              </div>
+              <p className="text-sm font-medium text-gray-400">
+                {search || filter !== 'TOUT' ? 'Aucun résultat pour ce filtre.' : 'Aucune demande d\'adhésion.'}
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-50">
+                    {['Membre', 'Contact', 'Date', 'Statut', 'Montant', 'Actions'].map(h => (
+                      <th key={h} className="px-5 py-3.5 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">{h}</th>
+                    ))}
                   </tr>
-                ) : (
-                  filteredAdhesions.map((adhesion, index) => (
-                    <motion.tr
-                      key={adhesion.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="hover:bg-gray-50"
-                    >
-                      <td className="px-6 py-4">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {adhesion.prenom} {adhesion.nom}
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {filtered.map((a, i) => (
+                    <motion.tr key={a.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
+                      className="hover:bg-gray-50/60 transition-colors">
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#002060] to-[#008751] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                            {(a.prenom || '?').charAt(0).toUpperCase()}
                           </div>
-                          <div className="text-sm text-gray-500">
-                            {adhesion.profession}
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">{a.prenom} {a.nom}</p>
+                            <p className="text-xs text-gray-400 truncate">{a.profession}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{adhesion.email}</div>
-                        <div className="text-sm text-gray-500">{adhesion.telephone}</div>
+                      <td className="px-5 py-4">
+                        <p className="text-sm text-gray-600 truncate max-w-[160px]">{a.email}</p>
+                        <p className="text-xs text-gray-400">{a.telephone}</p>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
-                          {format(new Date(adhesion.date_demande), 'dd MMM yyyy', { locale: fr })}
-                        </div>
+                      <td className="px-5 py-4 text-sm text-gray-400 whitespace-nowrap">
+                        {formatDateShort(a.date_demande)}
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(adhesion.statut)}`}>
-                          {getStatusText(adhesion.statut)}
-                        </span>
+                      <td className="px-5 py-4">
+                        <StatusBadge status={a.statut} />
                       </td>
-                      <td className="px-6 py-4">
-                        {adhesion.date_expiration ? (
-                          <div>
-                            <div className="text-sm text-gray-900">
-                              {format(new Date(adhesion.date_expiration), 'dd MMM yyyy', { locale: fr })}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {adhesion.jours_restants > 0 
-                                ? `${adhesion.jours_restants} jours restants`
-                                : 'Expirée'
-                              }
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-sm text-gray-500">Non définie</span>
-                        )}
+                      <td className="px-5 py-4">
+                        <span className="text-sm font-semibold text-[#008751]">{formatPrice(parseFloat(a.montant_paye || 5000))}</span>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedAdhesion(adhesion);
-                              setShowDetailModal(true);
-                            }}
-                            className="text-[#008751] hover:text-[#006B41] font-medium text-sm"
-                          >
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => setSelected(a)} className="px-2.5 py-1.5 text-xs font-semibold text-[#002060] bg-[#EEF2FF] hover:bg-[#002060] hover:text-white rounded-lg transition-all">
                             Voir
                           </button>
-                          {adhesion.statut === 'EN_ATTENTE' && (
-                            <>
-                              <button
-                                onClick={() => {
-                                  setSelectedAdhesion(adhesion);
-                                  setShowActionModal(true);
-                                }}
-                                className="text-green-600 hover:text-green-700 font-medium text-sm"
-                              >
-                                Approuver
-                              </button>
-                              <button
-                                onClick={() => {
-                                  if (confirm('Êtes-vous sûr de vouloir rejeter cette adhésion ?')) {
-                                    handleAction(adhesion, 'REJETER');
-                                  }
-                                }}
-                                className="text-red-600 hover:text-red-700 font-medium text-sm"
-                              >
-                                Rejeter
-                              </button>
-                            </>
+                          {a.statut === 'EN_ATTENTE' && (
+                            <button onClick={() => { setSelected(a); setShowAction(true); }} className="px-2.5 py-1.5 text-xs font-semibold text-[#059669] bg-[#ECFDF5] hover:bg-[#059669] hover:text-white rounded-lg transition-all">
+                              Traiter
+                            </button>
                           )}
-                          {adhesion.statut === 'APPROUVEE' && adhesion.jours_restants < 30 && (
-                            <button
-                              onClick={() => {
-                                if (confirm('Êtes-vous sûr de vouloir renouveler cette adhésion ?')) {
-                                  handleAction(adhesion, 'RENOUVELER');
-                                }
-                              }}
-                              className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                            >
+                          {a.statut === 'APPROUVEE' && (a.jours_restants || 0) < 30 && (
+                            <button onClick={() => handleAction('RENOUVELER', '')} className="px-2.5 py-1.5 text-xs font-semibold text-[#7C3AED] bg-[#EDE9FE] hover:bg-[#7C3AED] hover:text-white rounded-lg transition-all">
                               Renouveler
                             </button>
                           )}
                         </div>
                       </td>
                     </motion.tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Modal de détails */}
-      {showDetailModal && selectedAdhesion && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
-                <h3 className="text-xl font-bold text-gray-900">
-                  Détails de l'adhésion
-                </h3>
-                <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Nom complet</p>
-                    <p className="font-medium">{selectedAdhesion.prenom} {selectedAdhesion.nom}</p>
+      {/* Panneau détail */}
+      <AnimatePresence>
+        {selected && !showAction && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
+            <motion.div initial={{ scale: 0.96, y: 16 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96 }}
+              className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#002060] to-[#008751] flex items-center justify-center text-white font-bold text-lg">
+                      {(selected.prenom || '?').charAt(0)}
+                    </div>
+                    <div>
+                      <h2 className="font-bold text-lg text-gray-900">{selected.prenom} {selected.nom}</h2>
+                      <StatusBadge status={selected.statut} />
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium">{selectedAdhesion.email}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Téléphone</p>
-                    <p className="font-medium">{selectedAdhesion.telephone}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Profession</p>
-                    <p className="font-medium">{selectedAdhesion.profession}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Date de naissance</p>
-                    <p className="font-medium">{selectedAdhesion.date_naissance}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Lieu de naissance</p>
-                    <p className="font-medium">{selectedAdhesion.lieu_naissance}</p>
-                  </div>
+                  <button onClick={() => setSelected(null)} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400">
+                    <Icon path="M6 18L18 6M6 6l12 12" className="w-4 h-4" />
+                  </button>
                 </div>
-                
-                <div>
-                  <p className="text-sm text-gray-500">Adresse</p>
-                  <p className="font-medium">{selectedAdhesion.adresse}</p>
-                </div>
-                
-                <div>
-                  <p className="text-sm text-gray-500">Motivations</p>
-                  <p className="font-medium">{selectedAdhesion.motivations}</p>
-                </div>
-                
-                {selectedAdhesion.competences && (
-                  <div>
-                    <p className="text-sm text-gray-500">Compétences</p>
-                    <p className="font-medium">{selectedAdhesion.competences}</p>
-                  </div>
-                )}
-                
-                <div>
-                  <p className="text-sm text-gray-500">Montant payé</p>
-                  <p className="font-medium">{selectedAdhesion.montant_paye} FCFA</p>
-                </div>
-                
-                {selectedAdhesion.capture_depot && (
-                  <div>
-                    <p className="text-sm text-gray-500">Preuve de paiement</p>
-                    <img 
-                      src={selectedAdhesion.capture_depot} 
-                      alt="Preuve de paiement" 
-                      className="w-full max-w-xs rounded-lg border"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Modal d'action */}
-      {showActionModal && selectedAdhesion && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full">
-            <div className="p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Approuver l'adhésion
-              </h3>
-              <p className="text-gray-600 mb-6">
-                Vous allez approuver l'adhésion de {selectedAdhesion.prenom} {selectedAdhesion.nom}.
-                Cette action enverra un email de confirmation au membre.
-              </p>
-              
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Commentaires (optionnel)
-                </label>
-                {/* <textarea
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008751] focus:border-transparent"
-                  rows="3"
-                  placeholder="Ajoutez des commentaires..."
-                /> */}
-                <textarea
-                  value={adminComment}
-                  onChange={(e) => setAdminComment(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008751] focus:border-transparent"
-                  rows="3"
-                  placeholder="Ajoutez des commentaires..."
-                />
+                {/* Infos */}
+                <div className="grid grid-cols-2 gap-4 mb-5">
+                  {[
+                    { label: 'Email',        val: selected.email },
+                    { label: 'Téléphone',    val: selected.telephone },
+                    { label: 'Profession',   val: selected.profession },
+                    { label: 'Date de naissance', val: selected.date_naissance },
+                    { label: 'Lieu de naissance', val: selected.lieu_naissance },
+                    { label: 'Date demande', val: formatDateShort(selected.date_demande) },
+                    { label: 'Montant payé', val: formatPrice(parseFloat(selected.montant_paye || 5000)) },
+                    { label: 'Référence',    val: selected.reference_paiement || '—' },
+                  ].map(({ label, val }) => (
+                    <div key={label}>
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
+                      <p className="text-sm text-gray-800 font-medium">{val || '—'}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mb-4">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Adresse</p>
+                  <p className="text-sm text-gray-700">{selected.adresse}</p>
+                </div>
+
+                <div className="mb-4 bg-gray-50 rounded-xl p-4">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Motivations</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">{selected.motivations}</p>
+                </div>
+
+                {selected.competences && (
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Compétences</p>
+                    <p className="text-sm text-gray-700">{selected.competences}</p>
+                  </div>
+                )}
+
+                {selected.capture_depot && (
+                  <div className="mb-5">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Preuve de paiement</p>
+                    <img src={selected.capture_depot} alt="Preuve" className="w-full max-w-sm rounded-xl border border-gray-200" />
+                  </div>
+                )}
+
+                {/* Actions */}
+                {selected.statut === 'EN_ATTENTE' && (
+                  <div className="flex gap-3 pt-4 border-t border-gray-100">
+                    <button
+                      onClick={() => setShowAction(true)}
+                      className="flex-1 py-2.5 bg-[#059669] text-white font-semibold text-sm rounded-xl hover:bg-[#047857] transition-all">
+                      Approuver
+                    </button>
+                    <button
+                      onClick={() => handleAction('REJETER', '')}
+                      disabled={actionLoading}
+                      className="flex-1 py-2.5 bg-red-50 text-red-600 font-semibold text-sm rounded-xl hover:bg-red-100 disabled:opacity-50 transition-all">
+                      Rejeter
+                    </button>
+                  </div>
+                )}
               </div>
-              
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowActionModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  Annuler
-                </button>
-                <button
-                  onClick={() => handleAction(selectedAdhesion, 'APPROUVER', adminComment)}
-                  disabled={actionLoading}
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-                >
-                  {actionLoading ? 'Traitement...' : 'Approuver'}
-                </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal approbation */}
+      <AnimatePresence>
+        {showAction && selected && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowAction(false)}>
+            <motion.div initial={{ scale: 0.96 }} animate={{ scale: 1 }} exit={{ scale: 0.96 }}
+              className="bg-white rounded-2xl w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+              <div className="p-6">
+                <div className="w-12 h-12 bg-[#ECFDF5] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Icon path="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" className="w-6 h-6 text-[#059669]" />
+                </div>
+                <h3 className="font-bold text-lg text-center text-gray-900 mb-1">Approuver l'adhésion</h3>
+                <p className="text-sm text-center text-gray-400 mb-5">
+                  {selected.prenom} {selected.nom} sera notifié par email.
+                </p>
+                <div className="mb-5">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Commentaire (optionnel)</label>
+                  <textarea value={adminComment} onChange={e => setAdminComment(e.target.value)} rows={3}
+                    placeholder="Message à transmettre au membre..."
+                    className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none resize-none" />
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setShowAction(false)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600">Annuler</button>
+                  <button onClick={() => handleAction('APPROUVER', adminComment)} disabled={actionLoading}
+                    className="flex-1 py-2.5 bg-[#059669] text-white rounded-xl text-sm font-semibold hover:bg-[#047857] disabled:opacity-50 transition-all">
+                    {actionLoading ? 'Traitement...' : 'Confirmer l\'approbation'}
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </AdminLayout>
   );
 }

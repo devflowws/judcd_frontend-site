@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ASSOCIATION, MISSION, PAGE_CONTENT } from '@utils/constants';
+import { ASSOCIATION, MISSION } from '@utils/constants';
 import { useLanguage } from '@context/LanguageContext';
 import FadeInView, { RevealSection } from '@components/ui/Animations/FadeInView';
 
@@ -62,29 +62,22 @@ export default function About() {
                 {t('nav.about')}
               </span>
               <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060] mb-6 leading-tight">
-                {PAGE_CONTENT.about.title}
+                {t('about.title')}
               </h2>
             </RevealSection>
 
             <div className="space-y-4 text-[#666666] leading-relaxed">
-              <p>
-                {PAGE_CONTENT.about.content}
-              </p>
-              <p>
-                Convaincus que la jeunesse represente une force essentielle pour le changement, nous mobilisons les jeunes autour d'actions concretes visant a promouvoir le developpement durable, la solidarite et l'innovation sociale.
-              </p>
-              <p>
-                Notre ambition est de batir des communautes <strong className="text-[#002060]">autonomes, inclusives et resilientes</strong>, ou chacun peut contribuer activement au developpement durable.
-              </p>
+              <p>{t('about.content1')}</p>
+              <p>{t('about.content2')}</p>
             </div>
 
             {/* Liste des objectifs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
               {[
-                'Promouvoir le leadership des jeunes',
-                'Soutenir les initiatives locales',
-                'Sensibiliser aux enjeux environnementaux',
-                'Renforcer la solidarite et la cohesion sociale',
+                t('about.obj1'),
+                t('about.obj2'),
+                t('about.obj3'),
+                t('about.obj4'),
               ].map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className="w-5 h-5 bg-[#008751] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -103,7 +96,7 @@ export default function About() {
                 to="/a-propos"
                 className="inline-flex items-center justify-center px-6 py-3 bg-[#008751] text-white font-semibold rounded-xl hover:bg-[#006B41] transition-all shadow-lg shadow-green-500/25 group"
               >
-                En savoir plus
+                {t('about.learnMore')}
                 <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
@@ -112,7 +105,7 @@ export default function About() {
                 to="/contact"
                 className="inline-flex items-center justify-center px-6 py-3 border-2 border-[#008751] text-[#008751] font-semibold rounded-xl hover:bg-[#008751] hover:text-white transition-all"
               >
-                Nous contacter
+                {t('about.contactUs')}
               </Link>
             </div>
           </FadeInView>

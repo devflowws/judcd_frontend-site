@@ -25,7 +25,7 @@ export async function sendMessage(data) {
     recaptcha_token: data.recaptchaToken || null,
   };
 
-  return await post(API.endpoints.contact, messageData);
+  return await post(API.endpoints.public.contact, messageData);
 }
 
 /**

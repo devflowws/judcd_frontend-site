@@ -16,18 +16,17 @@ export async function submitDonation(data) {
     };
   }
 
+  // Mapper les champs frontend → modèle Django Don
   const donationData = {
-    full_name: data.fullName.trim(),
+    nom: data.fullName.trim(),
     email: data.email.trim(),
-    phone: data.phone ? data.phone.trim() : '',
-    amount: Number(data.amount),
-    payment_method: data.paymentMethod || 'mobile_money',
-    campaign: data.campaign || null,
+    montant: Number(data.amount),
+    moyen_paiement: data.paymentMethod || 'Mobile Money',
+    numero_transaction: data.transactionNumber || data.phone || '',
     message: data.message ? data.message.trim() : '',
-    anonymous: data.anonymous || false,
   };
 
-  return await post(API.endpoints.donations, donationData);
+  return await post(API.endpoints.public.donation, donationData);
 }
 
 /**
@@ -41,7 +40,7 @@ export async function verifyDonation(reference) {
     };
   }
 
-  return await get(`${API.endpoints.donations}verify/${reference}/`);
+  return await get(`${API.endpoints.admin.dons}verify/${reference}/`);
 }
 
 /**
@@ -60,7 +59,7 @@ export async function getDonations(params = {}) {
     ...(params.ordering && { ordering: params.ordering || '-created_at' }),
   };
 
-  return await get(API.endpoints.donations, queryParams);
+  return await get(API.endpoints.admin.dons, queryParams);
 }
 
 /**
@@ -70,7 +69,7 @@ export async function getDonationById(id) {
   if (!id) {
     return { success: false, error: { detail: 'ID du don requis.' } };
   }
-  return await get(`${API.endpoints.donations}${id}/`);
+  return await get(`${API.endpoints.admin.dons}${id}/`);
 }
 
 /**
@@ -81,7 +80,7 @@ export async function confirmDonation(id, notes = '') {
     return { success: false, error: { detail: 'ID du don requis.' } };
   }
 
-  return await put(`${API.endpoints.donations}${id}/`, {
+  return await put(`${API.endpoints.admin.dons}${id}/`, {
     status: 'confirmed',
     admin_notes: notes,
     confirmed_at: new Date().toISOString(),
@@ -96,7 +95,7 @@ export async function rejectDonation(id, reason = '') {
     return { success: false, error: { detail: 'ID du don requis.' } };
   }
 
-  return await put(`${API.endpoints.donations}${id}/`, {
+  return await put(`${API.endpoints.admin.dons}${id}/`, {
     status: 'rejected',
     admin_notes: reason,
   });
@@ -106,14 +105,14 @@ export async function rejectDonation(id, reason = '') {
  * Recupere les statistiques des dons (admin uniquement)
  */
 export async function getDonationStats(params = {}) {
-  return await get(`${API.endpoints.donations}stats/`, params);
+  return await get(`${API.endpoints.admin.dons}stats/`, params);
 }
 
 /**
  * Recupere les campagnes de dons actives
  */
 export async function getActiveCampaigns() {
-  return await get(`${API.endpoints.donations}campaigns/`, {
+  return await get(`${API.endpoints.admin.dons}campaigns/`, {
     status: 'active',
   });
 }
@@ -153,14 +152,14 @@ export async function generateReceipt(donationId) {
     return { success: false, error: { detail: 'ID du don requis.' } };
   }
 
-  return await get(`${API.endpoints.donations}${donationId}/receipt/`);
+  return await get(`${API.endpoints.admin.dons}${donationId}/receipt/`);
 }
 
 /**
  * Exporte les dons en CSV (admin uniquement)
  */
 export async function exportDonationsCSV(params = {}) {
-  return await get(`${API.endpoints.donations}export/`, {
+  return await get(`${API.endpoints.admin.dons}export/`, {
     ...params,
     format: 'csv',
   });

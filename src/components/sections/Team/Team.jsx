@@ -43,10 +43,10 @@ export default function Team() {
             {t('section.team')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            Notre Bureau Exécutif
+            {t('team.title')}
           </h2>
           <p className="text-[#666666] text-lg">
-            Une équipe de jeunes engagés, passionnés et déterminés à faire la différence dans leurs communautés.
+            {t('team.description')}
           </p>
         </FadeInView>
 
@@ -93,7 +93,7 @@ export default function Team() {
                 to="/equipe"
                 className="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#008751] text-[#008751] font-semibold rounded-xl hover:bg-[#008751] hover:text-white transition-all group"
               >
-                Voir toute l'équipe
+                {t('team.viewAll')}
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>

@@ -6,7 +6,7 @@ import { API } from '@utils/constants';
 // ==========================================
 
 export async function getTemoignages(params = {}) {
-  return await get(API.endpoints.temoignages, { params });
+  return await get(API.endpoints.public.temoignages, params);
 }
 
 export async function getTemoignageById(id) {

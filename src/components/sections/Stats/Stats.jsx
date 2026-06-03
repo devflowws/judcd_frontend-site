@@ -37,14 +37,14 @@ export default function Stats() {
             {t('section.stats')}
           </h2>
           <p className="text-white/70 text-lg max-w-2xl mx-auto">
-            L'impact de nos actions en quelques chiffres
+            {t('stats.description')}
           </p>
         </FadeInView>
 
         {/* Grille des statistiques */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {KEY_FIGURES.map((stat, index) => (
-            <StatItem key={index} stat={stat} index={index} />
+            <StatItem key={index} stat={{ ...stat, label: t(`figure.${index}.label`) }} index={index} />
           ))}
         </div>
 

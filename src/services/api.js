@@ -17,17 +17,27 @@ const apiClient = axios.create({
 // Stockage du token d'acces
 let accessToken = localStorage.getItem('judcd_access_token') || null;
 
+// Endpoints publics d'authentification : ne JAMAIS y envoyer de token.
+// Sinon un token expiré dans le localStorage fait rejeter la requête (401)
+// par JWTAuthentication avant même que la vue publique ne s'exécute.
+const AUTH_PATHS = ['/login/', '/refresh/'];
+
 // Intercepteur de requete : injection du token JWT
 apiClient.interceptors.request.use(
   (config) => {
-    // Toujours essayer de récupérer le token le plus récent
+    const url = config.url || '';
+    const isAuthPath = AUTH_PATHS.some((p) => url.includes(p));
+
+    if (isAuthPath) {
+      // Surtout pas de header Authorization sur login/refresh
+      if (config.headers) delete config.headers.Authorization;
+      return config;
+    }
+
     const currentToken = localStorage.getItem('judcd_access_token');
     if (currentToken) {
       accessToken = currentToken;
       config.headers.Authorization = `Bearer ${currentToken}`;
-      console.log('Token envoyé:', currentToken.substring(0, 20) + '...');
-    } else {
-      console.warn('Aucun token d\'authentification trouvé');
     }
     return config;
   },
@@ -43,6 +53,13 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    const reqUrl = originalRequest?.url || '';
+    const isAuthPath = AUTH_PATHS.some((p) => reqUrl.includes(p));
+
+    // Sur login/refresh : ne pas tenter de rafraîchir, renvoyer l'erreur telle quelle
+    if (isAuthPath) {
+      return Promise.reject(error);
+    }
 
     // Si 401 et pas encore retente
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -159,10 +176,12 @@ export async function del(endpoint) {
 
 /**
  * Upload de fichier (multipart/form-data)
+ * @param {string} method - 'post' (création) ou 'patch'/'put' (modification)
  */
-export async function upload(endpoint, formData, onProgress = null) {
+export async function upload(endpoint, formData, onProgress = null, method = 'post') {
   try {
-    const response = await apiClient.post(endpoint, formData, {
+    const verb = ['post', 'put', 'patch'].includes(method) ? method : 'post';
+    const response = await apiClient[verb](endpoint, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

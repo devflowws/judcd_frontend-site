@@ -61,17 +61,17 @@ export default function Partners() {
             {t('section.partners')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            Ils nous soutiennent
+            {t('partners.title')}
           </h2>
           <p className="text-[#666666] text-lg">
-            Nous collaborons avec des organisations qui partagent notre vision d'un développement communautaire durable.
+            {t('partners.description')}
           </p>
         </FadeInView>
 
         {/* Rendu conditionnel : Évite les calculs sur un tableau vide pendant le chargement */}
         {loading ? (
           <div className="text-center py-8 text-[#002060] font-semibold">
-            Chargement des partenaires...
+            {t('common.loadingPartners')}
           </div>
         ) : partnersList.length > 0 ? (
           <FadeInView>
@@ -79,7 +79,7 @@ export default function Partners() {
           </FadeInView>
         ) : (
           <div className="text-center py-8 text-gray-500 text-sm italic">
-            Aucun partenaire affiché pour le moment.
+            {t('partners.none')}
           </div>
         )}
 
@@ -87,16 +87,16 @@ export default function Partners() {
         <FadeInView className="text-center mt-16">
           <div className="bg-white rounded-2xl p-8 md:p-10 shadow-xl max-w-2xl mx-auto">
             <h3 className="font-heading font-bold text-xl text-[#002060] mb-3">
-              Devenir partenaire
+              {t('partners.become')}
             </h3>
             <p className="text-[#666666] text-sm mb-6">
-              Vous partagez notre vision et souhaitez collaborer avec nous ? Rejoignez notre réseau de partenaires engagés pour le développement durable.
+              {t('partners.becomeText')}
             </p>
             <a
               href="mailto:associationjudcd@gmail.com?subject=Proposition%20de%20partenariat"
               className="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#008751] text-[#008751] font-semibold rounded-xl hover:bg-[#008751] hover:text-white transition-all group"
             >
-              Proposer un partenariat
+              {t('partners.propose')}
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

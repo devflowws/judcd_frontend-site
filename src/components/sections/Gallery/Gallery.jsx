@@ -64,10 +64,10 @@ export default function Gallery() {
             {t('section.gallery')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            Nos actions en images
+            {t('gallery.title')}
           </h2>
           <p className="text-[#666666] text-lg">
-            Découvrez les moments forts de nos activités sur le terrain
+            {t('gallery.description')}
           </p>
         </FadeInView>
 
@@ -83,7 +83,7 @@ export default function Gallery() {
                   : 'bg-gray-100 text-[#666666] hover:bg-gray-200 hover:text-[#333333]'
               }`}
             >
-              {category === 'all' ? 'Toutes les photos' : category}
+              {category === 'all' ? t('gallery.all') : category}
             </button>
           ))}
         </FadeInView>
@@ -118,8 +118,17 @@ export default function Gallery() {
                   className="group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl"
                   onClick={() => openLightbox(photo)}
                 >
-                  {/* Image */}
-                  {photo.image ? (
+                  {/* Média : vidéo ou image */}
+                  {photo.video ? (
+                    <>
+                      <video src={photo.video} className="w-full h-full object-cover" muted preload="metadata" />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-14 h-14 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                        </div>
+                      </div>
+                    </>
+                  ) : photo.image ? (
                     <img
                       src={photo.image}
                       alt={photo.title || 'Photo JUDCD'}
@@ -177,6 +186,7 @@ export default function Gallery() {
         isOpen={isLightboxOpen}
         onClose={closeLightbox}
         image={selectedImage?.image}
+        video={selectedImage?.video}
         alt={selectedImage?.title}
         title={selectedImage?.title}
         description={selectedImage?.description || selectedImage?.category}

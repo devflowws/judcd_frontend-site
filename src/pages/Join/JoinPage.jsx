@@ -39,7 +39,7 @@ export default function JoinPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              Rejoindre JUDCD
+              {t('membership.title')}
             </motion.h1>
             <motion.p
               className="text-white/80 text-lg max-w-3xl mx-auto"
@@ -47,7 +47,7 @@ export default function JoinPage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              {t('join.description', 'Vous souhaitez vous engager pour le développement de votre communauté ? Rejoignez un réseau de jeunes et d\'acteurs engagés qui travaillent ensemble pour créer un impact positif et durable.')}
+              {t('membership.description')}
             </motion.p>
           </div>
         </section>

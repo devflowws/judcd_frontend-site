@@ -60,7 +60,7 @@ export default function DonatePage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              Soutenir JUDCD
+              {t('donation.title')}
             </motion.h1>
             <motion.p
               className="text-white/80 text-lg max-w-3xl mx-auto"
@@ -68,7 +68,7 @@ export default function DonatePage() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Votre don, quel que soit son montant, nous permet de financer nos projets communautaires et de continuer à avoir un impact positif durable.
+              {t('donation.description')}
             </motion.p>
           </div>
         </section>
@@ -136,13 +136,13 @@ export default function DonatePage() {
                       onClick={resetForm}
                       className="px-6 py-3 bg-[#008751] text-white font-semibold rounded-xl hover:bg-[#006B41] transition-all"
                     >
-                      Faire un autre don
+                      {t('donation.another')}
                     </button>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 md:p-10 shadow-2xl sticky top-24">
                     <h2 className="font-heading font-bold text-2xl text-[#002060] mb-6">
-                      Faire un don
+                      {t('nav.donate')}
                     </h2>
 
                     <div className="mb-5">
@@ -248,7 +248,7 @@ export default function DonatePage() {
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                           </svg>
-                          Faire un don
+                          {t('nav.donate')}
                         </>
                       )}
                     </button>

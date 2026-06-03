@@ -58,34 +58,34 @@ export default function Mission() {
             {t('section.mission')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            {MISSION.mission}
+            {t('home.mission.statement')}
           </h2>
           <p className="text-[#666666] text-lg leading-relaxed">
-            {MISSION.vision}
+            {t('home.vision.statement')}
           </p>
         </FadeInView>
 
         {/* Grille des services */}
         <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {SERVICES.map((service, index) => (
+          {SERVICES.map((service) => (
             <Card key={service.id} className="group text-center p-8">
               {/* Icone */}
               <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#008751]/10 to-[#002060]/10 rounded-2xl flex items-center justify-center text-[#008751] group-hover:scale-110 group-hover:bg-[#008751] group-hover:text-white transition-all duration-300">
                 {serviceIcons[service.icon] || serviceIcons.academic}
               </div>
-              
+
               {/* Contenu */}
               <h3 className="font-heading font-bold text-xl text-[#002060] mb-3 group-hover:text-[#008751] transition-colors">
-                {service.title}
+                {t(`service.${service.id}.title`)}
               </h3>
               <p className="text-[#666666] text-sm leading-relaxed">
-                {service.description}
+                {t(`service.${service.id}.desc`)}
               </p>
-              
+
               {/* Public cible */}
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-xs text-[#666666]">
-                  <span className="font-semibold text-[#002060]">Public :</span> {service.publicCible}
+                  <span className="font-semibold text-[#002060]">{t('service.publicLabel')}</span> {t(`service.${service.id}.public`)}
                 </p>
               </div>
             </Card>
@@ -99,7 +99,7 @@ export default function Mission() {
               {t('section.values')}
             </span>
             <h2 className="font-heading font-extrabold text-3xl md:text-4xl text-[#002060]">
-              Ce qui nous anime
+              {t('values.heading')}
             </h2>
           </div>
 
@@ -113,8 +113,8 @@ export default function Mission() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <h4 className="font-heading font-bold text-[#002060] mb-2">{value.name}</h4>
-                <p className="text-xs text-[#666666]">{value.description}</p>
+                <h4 className="font-heading font-bold text-[#002060] mb-2">{t(`value.${index}.name`)}</h4>
+                <p className="text-xs text-[#666666]">{t(`value.${index}.desc`)}</p>
               </motion.div>
             ))}
           </div>

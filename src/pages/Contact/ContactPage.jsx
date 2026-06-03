@@ -24,13 +24,13 @@ export default function ContactPage() {
   }, []);
 
   const subjects = [
-    'Adhésion',
-    'Partenariat',
-    'Renseignements',
-    'Don',
-    'Projet',
-    'Presse',
-    'Autre',
+    { value: 'Adhésion', key: 'subject.adhesion' },
+    { value: 'Partenariat', key: 'subject.partenariat' },
+    { value: 'Renseignements', key: 'subject.renseignements' },
+    { value: 'Don', key: 'subject.don' },
+    { value: 'Projet', key: 'subject.projet' },
+    { value: 'Presse', key: 'subject.presse' },
+    { value: 'Autre', key: 'subject.autre' },
   ];
 
   return (
@@ -108,7 +108,7 @@ export default function ContactPage() {
                       
                       <div>
                         <label htmlFor="name" className="block text-sm font-semibold text-[#333333] mb-2">
-                          Nom complet *
+                          {t('cform.name')} *
                         </label>
                         <input
                           type="text"
@@ -120,14 +120,14 @@ export default function ContactPage() {
                               ? 'border-red-500 focus:ring-red-200'
                               : 'border-gray-200 focus:border-[#008751] focus:ring-green-100'
                           }`}
-                          placeholder="Votre nom complet"
+                          placeholder={t('cform.namePh')}
                         />
                         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                       </div>
 
                       <div>
                         <label htmlFor="email" className="block text-sm font-semibold text-[#333333] mb-2">
-                          Email *
+                          {t('cform.email')} *
                         </label>
                         <input
                           type="email"
@@ -146,7 +146,7 @@ export default function ContactPage() {
 
                       <div>
                         <label htmlFor="phone" className="block text-sm font-semibold text-[#333333] mb-2">
-                          Téléphone
+                          {t('cform.phone')}
                         </label>
                         <input
                           type="tel"
@@ -160,7 +160,7 @@ export default function ContactPage() {
 
                       <div>
                         <label htmlFor="subject" className="block text-sm font-semibold text-[#333333] mb-2">
-                          Sujet *
+                          {t('cform.subject')} *
                         </label>
                         <select
                           id="subject"
@@ -169,7 +169,7 @@ export default function ContactPage() {
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#008751] focus:ring-2 focus:ring-green-100 transition-all bg-white"
                         >
                           {subjects.map((subject) => (
-                            <option key={subject} value={subject}>{subject}</option>
+                            <option key={subject.value} value={subject.value}>{t(subject.key)}</option>
                           ))}
                         </select>
                       </div>
@@ -177,7 +177,7 @@ export default function ContactPage() {
 
                     <div className="mt-6">
                       <label htmlFor="message" className="block text-sm font-semibold text-[#333333] mb-2">
-                        Message *
+                        {t('cform.message')} *
                       </label>
                       <textarea
                         id="message"
@@ -189,7 +189,7 @@ export default function ContactPage() {
                             ? 'border-red-500 focus:ring-red-200'
                             : 'border-gray-200 focus:border-[#008751] focus:ring-green-100'
                         }`}
-                        placeholder="Votre message..."
+                        placeholder={t('cform.messagePh')}
                       />
                       {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message}</p>}
                     </div>
@@ -206,7 +206,7 @@ export default function ContactPage() {
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                             </svg>
-                            Envoi en cours...
+                            {t('cform.sending')}
                           </>
                         ) : (
                           <>
@@ -225,7 +225,7 @@ export default function ContactPage() {
               {/* Infos de contact */}
               <FadeInView className="lg:col-span-2" direction="right">
                 <div className="bg-white rounded-2xl p-8 md:p-10 shadow-xl h-full">
-                  <h3 className="font-heading font-bold text-xl text-[#002060] mb-8">Nos coordonnées</h3>
+                  <h3 className="font-heading font-bold text-xl text-[#002060] mb-8">{t('cform.coords')}</h3>
 
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
@@ -236,7 +236,7 @@ export default function ContactPage() {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-semibold text-[#333333] mb-1">Adresse</p>
+                        <p className="font-semibold text-[#333333] mb-1">{t('contact.info.address')}</p>
                         <p className="text-[#666666] text-sm leading-relaxed">
                           {ASSOCIATION.address}<br />
                           {ASSOCIATION.city}, {ASSOCIATION.country}
@@ -251,7 +251,7 @@ export default function ContactPage() {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-semibold text-[#333333] mb-1">Téléphone</p>
+                        <p className="font-semibold text-[#333333] mb-1">{t('contact.info.phone')}</p>
                         <a href={`tel:${ASSOCIATION.phone}`} className="text-[#008751] text-sm hover:underline">
                           {formatPhoneNumber(ASSOCIATION.phone)}
                         </a>
@@ -265,7 +265,7 @@ export default function ContactPage() {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-semibold text-[#333333] mb-1">Email</p>
+                        <p className="font-semibold text-[#333333] mb-1">{t('contact.info.email')}</p>
                         <a href={`mailto:${ASSOCIATION.email}`} className="text-[#008751] text-sm hover:underline">
                           {ASSOCIATION.email}
                         </a>
@@ -274,7 +274,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="mt-10 pt-8 border-t border-gray-100">
-                    <p className="font-semibold text-[#333333] mb-4">Suivez-nous</p>
+                    <p className="font-semibold text-[#333333] mb-4">{t('cform.follow')}</p>
                     <div className="flex gap-3">
                       {SOCIAL_LINKS.tiktok && (
                         <a

@@ -64,7 +64,7 @@ export default function Testimonials() {
   if (loading || testimonials.length === 0) {
     return (
       <section className="py-20 bg-white text-center text-gray-500">
-        Chargement des témoignages...
+        {t('common.loadingTestimonials')}
       </section>
     );
   }
@@ -84,10 +84,10 @@ export default function Testimonials() {
             {t('section.testimonials')}
           </span>
           <h2 className="font-heading font-extrabold text-3xl md:text-4xl lg:text-5xl text-[#002060] mb-6 leading-tight">
-            Ce qu'ils disent de nous
+            {t('testimonials.title')}
           </h2>
           <p className="text-[#666666] text-lg">
-            Découvrez les témoignages de ceux qui ont bénéficié de nos actions
+            {t('testimonials.description')}
           </p>
         </FadeInView>
 

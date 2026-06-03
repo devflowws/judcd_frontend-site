@@ -1,7 +1,11 @@
 import { useState, useCallback } from 'react';
-import { get } from '../services/api'; // Ajuste le chemin vers ton client API axios
+import { get, upload, del, patch } from '../services/api';
 import { API } from '@utils/constants';
+import toast from 'react-hot-toast';
 
+// ==========================================
+// HOOK USEGALLERY - Galerie publique
+// ==========================================
 
 export function useGallery() {
   const [photos, setPhotos] = useState([]);
@@ -11,33 +15,25 @@ export function useGallery() {
   const fetchPhotos = useCallback(async (filters = {}) => {
     setIsLoading(true);
     try {
-      // Construction des paramètres de requête pour Django REST Framework
       const params = {};
+      if (filters.pageSize) params.page_size = filters.pageSize;
+      if (filters.category) params.category = filters.category;
 
-      if (filters.pageSize) {
-        params.page_size = filters.pageSize;
-      }
-      if (filters.category) {
-        params.category = filters.category;
-      }
+      const response = await get(API.endpoints.public.galerie, params);
+      const raw = response?.data?.results || response?.data || [];
 
-      // Appel de l'endpoint configuré dans tes constantes (ex: /api/galerie/)
-      // const response = await get(API.endpoints.galerie, { params });
-      const response = await get(API.endpoints.galerie, params);
-      const rawData = response && response.data ? response.data : [];
-
-      // Mapping sécurisé des champs de Galerie_Action
-      const mappedPhotos = rawData.map(photo => ({
+      setPhotos(raw.map(photo => ({
         id: photo.id,
         image: photo.image,
-        title: photo.title || photo.titre, // Sécurité si le champ varie
+        video: photo.video,
+        media_type: photo.media_type || (photo.video ? 'video' : 'image'),
+        title: photo.title,
         description: photo.description,
-        category: photo.category
-      }));
-
-      setPhotos(mappedPhotos);
-    } catch (error) {
-      console.error("Erreur lors de la récupération de la galerie :", error);
+        category: photo.category,
+        created_at: photo.created_at,
+      })));
+    } catch (err) {
+      console.error('Erreur galerie:', err);
       setPhotos([]);
     } finally {
       setIsLoading(false);
@@ -46,316 +42,112 @@ export function useGallery() {
 
   const changeCategory = useCallback((category) => {
     setActiveCategory(category);
-    // On relance la recherche avec la catégorie sélectionnée (null si 'Toutes les photos')
-    fetchPhotos({ pageSize: 8, category: category });
+    fetchPhotos({ pageSize: 50, category: category || undefined });
   }, [fetchPhotos]);
 
+  return { photos, isLoading, activeCategory, changeCategory, fetchPhotos };
+}
+
+// ==========================================
+// HOOK USEGALLERYADMIN - Gestion admin
+// ==========================================
+
+export function useGalleryAdmin() {
+  const [photos, setPhotos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [selectedPhotos, setSelectedPhotos] = useState([]);
+
+  const fetchAllPhotos = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await get(API.endpoints.admin.galerie);
+      const raw = response?.data?.results || response?.data || [];
+      setPhotos(Array.isArray(raw) ? raw : []);
+    } catch (err) {
+      toast.error('Erreur lors du chargement des photos.');
+      setPhotos([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const handleUpload = useCallback(async (file, metadata = {}) => {
+    setIsUploading(true);
+    setUploadProgress(0);
+    try {
+      const formData = new FormData();
+      // Détecte automatiquement image ou vidéo
+      const isVideo = file.type?.startsWith('video/');
+      formData.append(isVideo ? 'video' : 'image', file);
+      if (metadata.title) formData.append('title', metadata.title);
+      if (metadata.description) formData.append('description', metadata.description);
+      if (metadata.category) formData.append('category', metadata.category);
+
+      const result = await upload(API.endpoints.admin.galerie, formData, (p) => setUploadProgress(p));
+      if (result.success) {
+        toast.success('Photo ajoutée avec succès.');
+        await fetchAllPhotos();
+        return { success: true };
+      } else {
+        toast.error('Erreur lors de l\'upload.');
+        return { success: false };
+      }
+    } catch (err) {
+      toast.error('Erreur lors de l\'upload.');
+      return { success: false };
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  }, [fetchAllPhotos]);
+
+  const handleUpdate = useCallback(async (id, data) => {
+    try {
+      const result = await patch(`${API.endpoints.admin.galerie}${id}/`, data);
+      if (result.success) {
+        toast.success('Photo mise à jour.');
+        await fetchAllPhotos();
+        return { success: true };
+      }
+      toast.error('Erreur de mise à jour.');
+      return { success: false };
+    } catch (err) {
+      toast.error('Erreur de mise à jour.');
+      return { success: false };
+    }
+  }, [fetchAllPhotos]);
+
+  const handleDelete = useCallback(async (id) => {
+    try {
+      const result = await del(`${API.endpoints.admin.galerie}${id}/`);
+      if (result.success) {
+        toast.success('Photo supprimée.');
+        setSelectedPhotos(prev => prev.filter(pid => pid !== id));
+        await fetchAllPhotos();
+        return { success: true };
+      }
+      toast.error('Erreur de suppression.');
+      return { success: false };
+    } catch (err) {
+      toast.error('Erreur de suppression.');
+      return { success: false };
+    }
+  }, [fetchAllPhotos]);
+
+  const toggleSelect = useCallback((id) => {
+    setSelectedPhotos(prev => prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]);
+  }, []);
+
+  const selectAll = useCallback(() => setSelectedPhotos(photos.map(p => p.id)), [photos]);
+  const deselectAll = useCallback(() => setSelectedPhotos([]), []);
+
   return {
-    photos,
-    isLoading,
-    activeCategory,
-    changeCategory,
-    fetchPhotos
+    photos, isLoading, isUploading, uploadProgress, selectedPhotos,
+    fetchAllPhotos, handleUpload, handleUpdate, handleDelete,
+    toggleSelect, selectAll, deselectAll,
   };
 }
 
-
-
-// import { useState, useCallback } from 'react';
-// import {
-//   getPhotos,
-//   uploadPhoto,
-//   uploadMultiplePhotos,
-//   updatePhoto,
-//   deletePhoto,
-//   getGalleryCategories,
-// } from '@services/galleryService';
-// import toast from 'react-hot-toast';
-
-// // ==========================================
-// // HOOK USEGALLERY - Gestion de la galerie
-// // ==========================================
-
-// /**
-//  * Hook pour la galerie publique
-//  */
-// export function useGallery(options = {}) {
-//   const {
-//     initialCategory = null,
-//     pageSize = 12,
-//   } = options;
-
-//   const [photos, setPhotos] = useState([]);
-//   const [categories, setCategories] = useState([]);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [page, setPage] = useState(1);
-//   const [totalPages, setTotalPages] = useState(1);
-//   const [totalPhotos, setTotalPhotos] = useState(0);
-//   const [activeCategory, setActiveCategory] = useState(initialCategory);
-//   const [hasMore, setHasMore] = useState(false);
-
-//   // Charger les photos
-//   const fetchPhotos = useCallback(async (params = {}) => {
-//     setIsLoading(true);
-//     setError(null);
-
-//     try {
-//       const queryParams = {
-//         page: params.page || page,
-//         pageSize: params.pageSize || pageSize,
-//         ...(activeCategory && activeCategory !== 'all' && { category: activeCategory }),
-//         ...(params.search && { search: params.search }),
-//       };
-
-//       const result = await getPhotos(queryParams);
-
-//       if (result.success && result.data) {
-//         const responseData = result.data;
-//         const photosList = responseData.results || responseData;
-//         setPhotos(photosList);
-//         setTotalPages(responseData.total_pages || 1);
-//         setTotalPhotos(responseData.count || photosList.length);
-//         setHasMore(responseData.next !== null);
-//         setPage(queryParams.page);
-//         return { success: true, data: responseData };
-//       } else {
-//         setError(result.error?.detail || 'Erreur de chargement.');
-//         return { success: false, error: result.error };
-//       }
-//     } catch (err) {
-//       setError('Erreur de chargement des photos.');
-//       return { success: false, error: 'Erreur reseau.' };
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }, [page, pageSize, activeCategory]);
-
-//   // Changer de categorie
-//   const changeCategory = useCallback((category) => {
-//     setActiveCategory(category);
-//     setPage(1);
-//     fetchPhotos({ page: 1, category });
-//   }, [fetchPhotos]);
-
-//   // Page suivante
-//   const nextPage = useCallback(() => {
-//     if (hasMore) {
-//       fetchPhotos({ page: page + 1 });
-//     }
-//   }, [page, hasMore, fetchPhotos]);
-
-//   // Page precedente
-//   const previousPage = useCallback(() => {
-//     if (page > 1) {
-//       fetchPhotos({ page: page - 1 });
-//     }
-//   }, [page, fetchPhotos]);
-
-//   // Charger les categories
-//   const fetchCategories = useCallback(async () => {
-//     try {
-//       const result = await getGalleryCategories();
-//       if (result.success && result.data) {
-//         setCategories(result.data.results || result.data);
-//       }
-//     } catch (err) {
-//       console.error('Erreur chargement categories:', err);
-//     }
-//   }, []);
-
-//   return {
-//     photos,
-//     categories,
-//     isLoading,
-//     error,
-//     page,
-//     totalPages,
-//     totalPhotos,
-//     activeCategory,
-//     hasMore,
-//     fetchPhotos,
-//     fetchCategories,
-//     changeCategory,
-//     nextPage,
-//     previousPage,
-//     setPhotos,
-//   };
-// }
-
-// /**
-//  * Hook pour la gestion admin de la galerie
-//  */
-// export function useGalleryAdmin() {
-//   const [photos, setPhotos] = useState([]);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [isUploading, setIsUploading] = useState(false);
-//   const [uploadProgress, setUploadProgress] = useState(0);
-//   const [selectedPhotos, setSelectedPhotos] = useState([]);
-//   const [error, setError] = useState(null);
-
-//   // Charger toutes les photos
-//   const fetchAllPhotos = useCallback(async (params = {}) => {
-//     setIsLoading(true);
-//     setError(null);
-
-//     try {
-//       const result = await getPhotos({
-//         pageSize: params.pageSize || 50,
-//         ...params,
-//       });
-
-//       if (result.success && result.data) {
-//         setPhotos(result.data.results || result.data);
-//         return { success: true, data: result.data };
-//       } else {
-//         setError(result.error?.detail || 'Erreur de chargement.');
-//         return { success: false };
-//       }
-//     } catch (err) {
-//       setError('Erreur de chargement des photos.');
-//       return { success: false };
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }, []);
-
-//   // Uploader une photo
-//   const handleUpload = useCallback(async (file, metadata = {}) => {
-//     setIsUploading(true);
-//     setUploadProgress(0);
-//     setError(null);
-
-//     try {
-//       const result = await uploadPhoto(file, metadata, (progress) => {
-//         setUploadProgress(progress);
-//       });
-
-//       if (result.success) {
-//         toast.success('Photo ajoutee avec succes.');
-//         await fetchAllPhotos();
-//         return { success: true, data: result.data };
-//       } else {
-//         toast.error(result.error?.detail || 'Erreur lors de l\'upload.');
-//         setError(result.error?.detail);
-//         return { success: false };
-//       }
-//     } catch (err) {
-//       toast.error('Erreur lors de l\'upload.');
-//       setError('Erreur reseau.');
-//       return { success: false };
-//     } finally {
-//       setIsUploading(false);
-//       setUploadProgress(0);
-//     }
-//   }, [fetchAllPhotos]);
-
-//   // Uploader plusieurs photos
-//   const handleUploadMultiple = useCallback(async (files, metadata = {}) => {
-//     setIsUploading(true);
-//     setError(null);
-
-//     try {
-//       const result = await uploadMultiplePhotos(files, metadata, (progressInfo) => {
-//         setUploadProgress(progressInfo.progress);
-//       });
-
-//       if (result.success) {
-//         const count = result.data?.length || 0;
-//         toast.success(`${count} photo(s) ajoutee(s) avec succes.`);
-//         await fetchAllPhotos();
-//         return { success: true };
-//       }
-
-//       if (result.partial) {
-//         toast.success(`${result.data?.length || 0} photo(s) ajoutee(s). ${result.errors?.length || 0} echec(s).`);
-//         await fetchAllPhotos();
-//         return { success: true, partial: true };
-//       }
-
-//       toast.error('Erreur lors de l\'upload.');
-//       return { success: false };
-//     } catch (err) {
-//       toast.error('Erreur lors de l\'upload multiple.');
-//       return { success: false };
-//     } finally {
-//       setIsUploading(false);
-//       setUploadProgress(0);
-//     }
-//   }, [fetchAllPhotos]);
-
-//   // Mettre a jour une photo
-//   const handleUpdate = useCallback(async (id, data) => {
-//     try {
-//       const result = await updatePhoto(id, data);
-//       if (result.success) {
-//         toast.success('Photo mise a jour.');
-//         await fetchAllPhotos();
-//         return { success: true };
-//       } else {
-//         toast.error(result.error?.detail || 'Erreur de mise a jour.');
-//         return { success: false };
-//       }
-//     } catch (err) {
-//       toast.error('Erreur de mise a jour.');
-//       return { success: false };
-//     }
-//   }, [fetchAllPhotos]);
-
-//   // Supprimer une photo
-//   const handleDelete = useCallback(async (id) => {
-//     try {
-//       const result = await deletePhoto(id);
-//       if (result.success) {
-//         toast.success('Photo supprimée.');
-//         setSelectedPhotos(prev => prev.filter(pid => pid !== id));
-//         await fetchAllPhotos();
-//         return { success: true };
-//       } else {
-//         toast.error(result.error?.detail || 'Erreur de suppression.');
-//         return { success: false };
-//       }
-//     } catch (err) {
-//       toast.error('Erreur de suppression.');
-//       return { success: false };
-//     }
-//   }, [fetchAllPhotos]);
-
-//   // Selection / Deselection
-//   const toggleSelect = useCallback((id) => {
-//     setSelectedPhotos(prev =>
-//       prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
-//     );
-//   }, []);
-
-//   const selectAll = useCallback(() => {
-//     setSelectedPhotos(photos.map(p => p.id));
-//   }, [photos]);
-
-//   const deselectAll = useCallback(() => {
-//     setSelectedPhotos([]);
-//   }, []);
-
-//   return {
-//     photos,
-//     isLoading,
-//     isUploading,
-//     uploadProgress,
-//     selectedPhotos,
-//     error,
-//     fetchAllPhotos,
-//     handleUpload,
-//     handleUploadMultiple,
-//     handleUpdate,
-//     handleDelete,
-//     toggleSelect,
-//     selectAll,
-//     deselectAll,
-//   };
-// }
-
-// // ==========================================
-// // HOOK USEGALLERYADMIN - Gestion admin de la galerie
-// // ==========================================
-
-// export default useGallery;
+export default useGallery;

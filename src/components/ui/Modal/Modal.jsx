@@ -155,11 +155,12 @@ export function ConfirmModal({
   );
 }
 
-// Modale d'image (lightbox)
+// Modale d'image / vidéo (lightbox)
 export function ImageModal({
   isOpen,
   onClose,
   image,
+  video,
   alt = '',
   title = '',
   description = '',
@@ -173,13 +174,20 @@ export function ImageModal({
       className="bg-transparent shadow-none"
     >
       <div className="flex flex-col items-center">
-        {image && (
+        {video ? (
+          <video
+            src={video}
+            controls
+            autoPlay
+            className="max-w-full max-h-[75vh] rounded-lg bg-black"
+          />
+        ) : image ? (
           <img
             src={image}
             alt={alt}
             className="max-w-full max-h-[70vh] object-contain rounded-lg"
           />
-        )}
+        ) : null}
         {title && (
           <h4 className="font-heading font-bold text-lg text-white mt-4">{title}</h4>
         )}

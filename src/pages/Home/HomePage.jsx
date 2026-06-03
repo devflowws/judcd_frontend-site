@@ -8,6 +8,7 @@ import Hero from '@components/sections/Hero/Hero';
 import Stats from '@components/sections/Stats/Stats';
 import Mission from '@components/sections/Mission/Mission';
 import About from '@components/sections/About/About';
+import Actions from '@components/sections/Actions/Actions';
 import Gallery from '@components/sections/Gallery/Gallery';
 import Team from '@components/sections/Team/Team';
 import Testimonials from '@components/sections/Testimonials/Testimonials';
@@ -54,7 +55,10 @@ export default function HomePage() {
         {/* Section 4 : À propos - Présenter l'association */}
         <About />
 
-        {/* Section 5 : Galerie - Montrer les réalisations en images */}
+        {/* Section 5 : Actions communautaires - Réalisations sur le terrain */}
+        <Actions />
+
+        {/* Section 6 : Galerie - Montrer les réalisations en images */}
         <Gallery />
 
         {/* Section 6 : Équipe - Présenter le bureau exécutif */}
